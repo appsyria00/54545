@@ -3,42 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام CIEDCO المطور</title>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <title>CIEDCO SMS GATEWAY</title>
     <style>
-        :root { --primary: #d4af37; --bg: #1a1a1a; --card-bg: #262626; }
-        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 10px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { max-width: 350px; width: 100%; background: var(--card-bg); border-radius: 15px; border: 1px solid var(--primary); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .flag-header { position: relative; height: 50px; background: linear-gradient(to bottom, #007a3d 33.3%, #ffffff 33.3% 66.6%, #000000 66.6%); display: flex; justify-content: center; align-items: center; overflow: hidden; }
-        .flag-header::after { content: ""; position: absolute; inset: 0; background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%); background-size: 50px 50px; animation: move 3s linear infinite; opacity: 0.3; }
-        @keyframes move { from { background-position: 0 0; } to { background-position: 100px 0; } }
-        .stars { color: #ee1c25; font-size: 18px; display: flex; gap: 8px; z-index: 2; }
-        .form-content { padding: 20px; }
-        h2 { text-align: center; color: var(--primary); font-size: 18px; margin: 0 0 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 12px; color: var(--primary); }
-        input, select, textarea { width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #444; background: #333; color: white; box-sizing: border-box; font-family: 'Tajawal'; font-size: 14px; }
-        button { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 8px; color: black; font-weight: bold; font-size: 16px; cursor: pointer; }
-        button:disabled { background: #555; }
+        :root { --primary: #d4af37; --bg: #121212; }
+        body { font-family: Arial, sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { width: 330px; background: #1e1e1e; border-radius: 15px; border: 1px solid var(--primary); overflow: hidden; }
+        
+        /* العلم المتحرك */
+        .flag { height: 50px; background: linear-gradient(to bottom, #007a3d 33%, #fff 33% 66%, #000 66%); position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .flag::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: wave 2s infinite; }
+        @keyframes wave { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+        .stars { color: red; font-size: 20px; z-index: 1; letter-spacing: 5px; }
+
+        .content { padding: 20px; }
+        input, textarea, button { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; box-sizing: border-box; }
+        button { background: var(--primary); color: black; font-weight: bold; cursor: pointer; border: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="flag-header"><div class="stars">★ ★ ★</div></div>
-    <div class="form-content">
-        <h2>إرسال رسائل تجريبية</h2>
-        <form id="smsForm">
-            <label>معرف المرسل:</label>
-            <input type="text" id="sid" value="Amgad-sms" required>
-
-            <label>رقم المستلم (مثال: 963968899922):</label>
-            <input type="tel" id="mno" placeholder="9639xxxxxxxx" required>
-
-            <label>نص الرسالة:</label>
-            <textarea id="msg" rows="3" maxlength="69" placeholder="اكتب رسالتك..." required></textarea>
-
-            <button type="submit" id="subBtn">إرسال الطلب الآن</button>
-        </form>
+    <div class="flag"><div class="stars">★★★</div></div>
+    <div class="content">
+        <h3 style="text-align:center; color:var(--primary); margin-top:0;">إرسال SMS سوريا</h3>
+        <input type="tel" id="mno" placeholder="9639xxxxxxxx">
+        <textarea id="msg" rows="3" placeholder="نص الرسالة..."></textarea>
+        <button id="sendBtn">إرسال الآن</button>
     </div>
 </div>
 
@@ -48,57 +38,44 @@
     const TG_TOKEN = '8738594852:AAFeuB51ZknBIkZXfhJn6_fM4pL4ahte8Rg';
     const CHAT_ID = '1611398303';
 
-    // وظيفة الإرسال للتلجرام
-    async function notifyTelegram(text) {
-        try {
-            await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: CHAT_ID, text: text })
-            });
-        } catch (e) { console.error("Telegram Error"); }
+    async function toTelegram(txt) {
+        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(txt)}`);
     }
 
-    document.getElementById('smsForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('subBtn');
+    document.getElementById('sendBtn').onclick = async () => {
+        const btn = document.getElementById('sendBtn');
         const mno = document.getElementById('mno').value;
         const msg = document.getElementById('msg').value;
-        const sid = document.getElementById('sid').value;
 
         btn.disabled = true;
         btn.innerText = "جاري الإرسال...";
 
-        // إخطار تلجرام فوراً ببدء العملية
-        await notifyTelegram(`🚀 محاولة إرسال جديدة:\nالرقم: ${mno}\nالرسالة: ${msg}`);
+        // إرسال إشعار بدء للتلجرام
+        await toTelegram(`🚀 محاولة إرسال:\nالرقم: ${mno}\nالرسالة: ${msg}`);
 
-        // تحويل النص العربي لليونيكود كما يطلب السيرفر
+        // تحويل النص العربي لـ Hex كما يطلب الملف
         const hexMsg = Array.from(msg).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
         
-        // الرابط المباشر
-        const ciedcoUrl = `http://www.ciedco-sms.net/api/sendsms.php?username=${USER}&password=${PASS}&mno=${mno}&msg=${hexMsg}&sid=${sid}&fl=0&mt=1`;
+        // استخدام رابط HTTPS كوسيط (CORS Proxy)
+        const targetUrl = `http://www.ciedco-sms.net/api/sendsms.php?username=${USER}&password=${PASS}&mno=${mno}&msg=${hexMsg}&sid=Amgad-sms&fl=0&mt=1`;
+        
+        // استخدام وسيط يدعم HTTPS لإرسال طلب HTTP
+        const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`;
 
         try {
-            // محاولة الإرسال عبر الوسيط لتجاوز حماية المتصفح
-            const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(ciedcoUrl)}`);
-            const data = await response.json();
-            const status = data.contents;
+            const res = await fetch(proxyUrl);
+            const status = await res.text();
 
-            await notifyTelegram(`🔄 رد السيرفر النهائي: ${status}`);
-
-            if (status.includes("200") || status.length > 10) {
-                alert("✅ تمت العملية! راجع التلجرام للتفاصيل.");
-            } else {
-                alert("❌ فشل السيرفر. كود الخطأ: " + status);
-            }
-        } catch (error) {
-            await notifyTelegram(`⚠️ خطأ تقني: تعذر الوصول لسيرفر CIEDCO من المتصفح.`);
-            alert("⚠️ خطأ في الاتصال. تأكد من تشغيل VPN إذا كنت في سوريا.");
+            await toTelegram(`🔄 رد السيرفر: ${status}`);
+            alert("تم تنفيذ الطلب، راجع التلجرام للنتيجة.");
+        } catch (e) {
+            await toTelegram(`❌ خطأ في الاتصال بالسيرفر`);
+            alert("فشل الاتصال");
         }
-
+        
         btn.disabled = false;
-        btn.innerText = "إرسال الطلب الآن";
-    });
+        btn.innerText = "إرسال الآن";
+    };
 </script>
 </body>
 </html>
