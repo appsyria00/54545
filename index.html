@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amgad SMS - Smart Sender</title>
+    <title>Amgad SMS - Professional</title>
     <style>
         :root { --gold: #d4af37; --bg: #121212; --card: #1e1e1e; }
         body { font-family: sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
         #loginScreen { position: fixed; inset: 0; background: var(--bg); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .container { width: 100%; max-width: 350px; background: var(--card); border-radius: 15px; border: 1px solid var(--gold); overflow: hidden; display: none; }
-        .flag { height: 50px; background: linear-gradient(to bottom, #007a3d 33%, #fff 33% 66%, #000 66%); position: relative; display: flex; justify-content: center; align-items: center; }
+        .container { width: 100%; max-width: 360px; background: var(--card); border-radius: 15px; border: 1px solid var(--gold); overflow: hidden; display: none; }
+        .flag { height: 50px; background: linear-gradient(to bottom, #007a3d 33%, #fff 33% 66%, #000 66%); display: flex; justify-content: center; align-items: center; }
         .stars { color: red; font-size: 20px; letter-spacing: 5px; }
         .content { padding: 20px; }
         input, select, textarea, button { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; box-sizing: border-box; font-size: 14px; }
         button { background: var(--gold); color: black; font-weight: bold; cursor: pointer; border: none; }
         label { display: block; margin-bottom: 5px; font-size: 12px; color: var(--gold); }
-        #status { font-size: 12px; text-align: center; color: #aaa; margin-top: 5px; }
+        .status-msg { font-size: 11px; text-align: center; color: #888; }
     </style>
 </head>
 <body>
 
 <div id="loginScreen">
-    <h3 style="color:var(--gold)">دخول النظام</h3>
-    <input type="password" id="passInput" placeholder="كلمة السر" style="width: 220px; text-align: center;">
-    <button onclick="checkPass()" style="width: 220px;">دخول</button>
+    <h3 style="color:var(--gold)">نظام الرسائل المتطور</h3>
+    <input type="password" id="passInput" placeholder="كلمة السر">
+    <button onclick="checkPass()" style="width: 200px;">دخول</button>
 </div>
 
 <div class="container" id="mainApp">
@@ -35,12 +35,15 @@
             <option value="ciedco-sms">ciedco-sms</option>
             <option value="ciedco2sms">ciedco2sms</option>
         </select>
-        <label>أرقام المستلمين (رقم في كل سطر):</label>
-        <textarea id="mno" rows="5" placeholder="9639xxxxxxxx"></textarea>
+
+        <label>الأرقام (يجب أن تبدأ بـ 963):</label>
+        <textarea id="mno" rows="5" placeholder="963968899922&#10;9639xxxxxxxx"></textarea>
+
         <label>الرسالة:</label>
         <textarea id="msg" rows="2" maxlength="70" placeholder="نص الرسالة..."></textarea>
-        <button id="sendBtn">بدء الإرسال المتسلسل</button>
-        <div id="status"></div>
+
+        <button id="sendBtn">بدء الإرسال الآمن</button>
+        <div id="status" class="status-msg"></div>
     </div>
 </div>
 
@@ -50,7 +53,8 @@
         PASS: "sham09688999222",
         TG_TOKEN: '8738594852:AAFeuB51ZknBIkZXfhJn6_fM4pL4ahte8Rg',
         CHAT_ID: '1611398303',
-        APP_PASS: "0968899922"
+        APP_PASS: "0968899922",
+        MAX_LIMIT: 50 // حد الإرسال الأقصى لكل عملية (تقدر تغيره)
     };
 
     function checkPass() {
@@ -71,42 +75,50 @@
         const msg = document.getElementById('msg').value;
         const sid = document.getElementById('sid').value;
 
-        const mnoArray = mnoInput.split(/\r?\n/).map(num => num.replace(/\D/g, '')).filter(num => num.length > 5);
+        // 1. الترتيب الأوتوماتيكي والفلترة
+        let mnoArray = mnoInput.split(/\r?\n/)
+            .map(num => num.replace(/\D/g, '')) // حذف أي شيء ليس رقماً
+            .filter(num => num.length > 5); // حذف الأسطر الفارغة
+
+        // 2. التحقق من صيغة 963
+        const invalidNumbers = mnoArray.filter(num => !num.startsWith('963'));
+        if (invalidNumbers.length > 0) {
+            return alert("خطأ: يوجد أرقام لا تبدأ بـ 963. يرجى تصحيحها.");
+        }
+
+        // 3. التحقق من الحد الأقصى (Limit)
+        if (mnoArray.length > CONFIG.MAX_LIMIT) {
+            return alert(`خطأ: لا يمكنك إرسال أكثر من ${CONFIG.MAX_LIMIT} رسالة في المرة الواحدة.`);
+        }
+
         if (mnoArray.length === 0 || !msg) return alert("أدخل البيانات");
 
         btn.disabled = true;
-        let successCount = 0;
-
-        await notify(`🚀 بدء حملة إرسال لـ ${mnoArray.length} أرقام...\nالرسالة: ${msg}`);
+        let success = 0;
+        await notify(`🚀 حملة جديدة بحد ${CONFIG.MAX_LIMIT} رسالة\nالعدد الحالي: ${mnoArray.length}\nالمعرف: ${sid}`);
 
         const hexMsg = Array.from(msg).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
 
         for (let i = 0; i < mnoArray.length; i++) {
-            const currentNum = mnoArray[i];
             statusDiv.innerText = `جاري إرسال ${i + 1} من ${mnoArray.length}...`;
+            const currentNum = mnoArray[i];
 
             const targetUrl = `http://www.ciedco-sms.net/api/sendsms.php?username=${CONFIG.USER}&password=${CONFIG.PASS}&mno=${currentNum}&msg=${hexMsg}&sid=${sid}&fl=0&mt=1`;
             
             try {
                 const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`);
                 const result = await res.text();
-                
-                if (result.includes("OK") || result.length > 10) {
-                    successCount++;
-                }
-                await notify(`📱 رقم: ${currentNum}\n🔄 رد السيرفر: ${result}`);
+                if (result.includes("OK") || result.length > 10) success++;
+                await notify(`📱 ${currentNum} -> ${result}`);
             } catch (e) {
-                await notify(`❌ فشل الاتصال بالرقم: ${currentNum}`);
+                await notify(`❌ فشل: ${currentNum}`);
             }
-            
-            // تأخير بسيط 1 ثانية بين كل رقم لتجنب حظر السيرفر
-            await new Promise(r => setTimeout(r, 1000));
+            await new Promise(r => setTimeout(r, 800)); // سرعة إرسال متوازنة
         }
 
-        alert(`اكتملت العملية!\nنجح إرسال: ${successCount} من أصل ${mnoArray.length}`);
+        alert(`اكتمل! نجح: ${success} من ${mnoArray.length}`);
         btn.disabled = false;
-        btn.innerText = "بدء الإرسال المتسلسل";
-        statusDiv.innerText = "اكتمل الإرسال.";
+        statusDiv.innerText = "جاهز للإرسال القادم.";
     };
 </script>
 </body>
