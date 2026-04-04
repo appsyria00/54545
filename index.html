@@ -3,78 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CIEDCO SMS GATEWAY</title>
+    <title>نظام الإرسال الجماعي - Amgad SMS</title>
     <style>
-        :root { --primary: #d4af37; --bg: #121212; }
-        body { font-family: Arial, sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .container { width: 330px; background: #1e1e1e; border-radius: 15px; border: 1px solid var(--primary); overflow: hidden; }
+        :root { --gold: #d4af37; --bg: #121212; --card: #1e1e1e; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
         
-        /* العلم المتحرك */
-        .flag { height: 50px; background: linear-gradient(to bottom, #007a3d 33%, #fff 33% 66%, #000 66%); position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        .flag::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: wave 2s infinite; }
+        /* شاشة تسجيل الدخول */
+        #loginScreen { position: fixed; inset: 0; background: var(--bg); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        
+        .container { width: 100%; max-width: 330px; background: var(--card); border-radius: 15px; border: 1px solid var(--gold); overflow: hidden; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+        
+        .flag-box { height: 50px; background: linear-gradient(to bottom, #007a3d 33%, #fff 33% 66%, #000 66%); position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .flag-box::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: wave 3s infinite; }
         @keyframes wave { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-        .stars { color: red; font-size: 20px; z-index: 1; letter-spacing: 5px; }
+        .stars { color: #ee1c25; font-size: 20px; z-index: 1; letter-spacing: 5px; }
 
         .content { padding: 20px; }
-        input, textarea, button { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; box-sizing: border-box; }
-        button { background: var(--primary); color: black; font-weight: bold; cursor: pointer; border: none; }
+        h3 { text-align: center; color: var(--gold); margin: 0 0 15px 0; font-size: 18px; }
+        label { display: block; margin-bottom: 5px; font-size: 12px; color: var(--gold); font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; box-sizing: border-box; font-size: 14px; }
+        
+        .hint { font-size: 10px; color: #888; margin-top: -12px; margin-bottom: 12px; }
+        button { width: 100%; padding: 12px; background: var(--gold); color: black; font-weight: bold; cursor: pointer; border: none; border-radius: 8px; font-size: 16px; }
+        button:disabled { background: #555; cursor: not-allowed; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="flag"><div class="stars">★★★</div></div>
+<div id="loginScreen">
+    <div class="flag-box" style="width: 200px; border-radius: 10px; margin-bottom: 20px;"><div class="stars">★★★</div></div>
+    <h3 style="color:var(--gold)">دخول النظام</h3>
+    <input type="password" id="passInput" placeholder="أدخل كلمة السر" style="width: 250px; text-align: center;">
+    <button onclick="checkPass()" style="width: 250px;">دخول</button>
+</div>
+
+<div class="container" id="mainApp">
+    <div class="flag-box"><div class="stars">★★★</div></div>
     <div class="content">
-        <h3 style="text-align:center; color:var(--primary); margin-top:0;">إرسال SMS سوريا</h3>
-        <input type="tel" id="mno" placeholder="9639xxxxxxxx">
-        <textarea id="msg" rows="3" placeholder="نص الرسالة..."></textarea>
-        <button id="sendBtn">إرسال الآن</button>
+        <h3>لوحة الإرسال الجماعي</h3>
+        <label>اختيار معرف المرسل:</label>
+        <select id="sid">
+            <option value="Amgad-sms">Amgad-sms</option>
+            <option value="ciedco-sms">ciedco-sms</option>
+            <option value="ciedco2sms">ciedco2sms</option>
+        </select>
+
+        <label>أرقام المستلمين:</label>
+        <textarea id="mno" rows="2" placeholder="9639xxx,9639xxx"></textarea>
+        <div class="hint">افصل بين الأرقام بفاصلة (,) للإرسال الجماعي</div>
+
+        <label>نص الرسالة (70 حرف):</label>
+        <textarea id="msg" rows="3" maxlength="70" placeholder="اكتب رسالتك هنا..."></textarea>
+
+        <button id="sendBtn">إرسال الطلب الآن</button>
     </div>
 </div>
 
 <script>
-    const USER = "appsyria00@gmail.com";
-    const PASS = "sham09688999222";
-    const TG_TOKEN = '8738594852:AAFeuB51ZknBIkZXfhJn6_fM4pL4ahte8Rg';
-    const CHAT_ID = '1611398303';
+    const CONFIG = {
+        USER: "appsyria00@gmail.com",
+        PASS: "sham09688999222",
+        TG_TOKEN: '8738594852:AAFeuB51ZknBIkZXfhJn6_fM4pL4ahte8Rg',
+        CHAT_ID: '1611398303',
+        APP_PASS: "0968899922" // كلمة سر الدخول
+    };
+
+    // وظيفة التحقق من كلمة السر
+    function checkPass() {
+        const input = document.getElementById('passInput').value;
+        if (input === CONFIG.APP_PASS) {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+        } else {
+            alert("كلمة السر خاطئة!");
+        }
+    }
 
     async function toTelegram(txt) {
-        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(txt)}`);
+        try {
+            await fetch(`https://api.telegram.org/bot${CONFIG.TG_TOKEN}/sendMessage?chat_id=${CONFIG.CHAT_ID}&text=${encodeURIComponent(txt)}`);
+        } catch (e) {}
     }
 
     document.getElementById('sendBtn').onclick = async () => {
         const btn = document.getElementById('sendBtn');
-        const mno = document.getElementById('mno').value;
+        const mno = document.getElementById('mno').value.replace(/\s/g, ''); // إزالة الفراغات
         const msg = document.getElementById('msg').value;
+        const sid = document.getElementById('sid').value;
+
+        if (!mno || !msg) return alert("يرجى ملء البيانات");
 
         btn.disabled = true;
-        btn.innerText = "جاري الإرسال...";
+        btn.innerText = "جاري الإرسال الجماعي...";
 
-        // إرسال إشعار بدء للتلجرام
-        await toTelegram(`🚀 محاولة إرسال:\nالرقم: ${mno}\nالرسالة: ${msg}`);
+        await toTelegram(`📢 محاولة إرسال جماعي:\nالمعرف: ${sid}\nالأرقام: ${mno}\nالرسالة: ${msg}`);
 
-        // تحويل النص العربي لـ Hex كما يطلب الملف
+        // تحويل للعربي Hex
         const hexMsg = Array.from(msg).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
         
-        // استخدام رابط HTTPS كوسيط (CORS Proxy)
-        const targetUrl = `http://www.ciedco-sms.net/api/sendsms.php?username=${USER}&password=${PASS}&mno=${mno}&msg=${hexMsg}&sid=Amgad-sms&fl=0&mt=1`;
-        
-        // استخدام وسيط يدعم HTTPS لإرسال طلب HTTP
+        // الرابط مع دعم الجماعي (mno يقبل الفواصل تلقائياً)
+        const targetUrl = `http://www.ciedco-sms.net/api/sendsms.php?username=${CONFIG.USER}&password=${CONFIG.PASS}&mno=${mno}&msg=${hexMsg}&sid=${sid}&fl=0&mt=1`;
         const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`;
 
         try {
             const res = await fetch(proxyUrl);
             const status = await res.text();
 
-            await toTelegram(`🔄 رد السيرفر: ${status}`);
-            alert("تم تنفيذ الطلب، راجع التلجرام للنتيجة.");
+            await toTelegram(`🔄 رد السيرفر النهائي: ${status}`);
+            alert("تم تنفيذ العملية بنجاح! راجع التلجرام.");
         } catch (e) {
-            await toTelegram(`❌ خطأ في الاتصال بالسيرفر`);
-            alert("فشل الاتصال");
+            await toTelegram(`❌ فشل الاتصال بالسيرفر`);
+            alert("فشل في الاتصال");
         }
         
         btn.disabled = false;
-        btn.innerText = "إرسال الآن";
+        btn.innerText = "إرسال الطلب الآن";
     };
 </script>
 </body>
