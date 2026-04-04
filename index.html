@@ -3,168 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amgad SMS - OTP System</title>
+    <title>Amgad SMS - Cloud Ready</title>
     <style>
         :root { --gold: #d4af37; --bg: #121212; --card: #1e1e1e; }
         body { font-family: sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
-        
-        /* شاشات الدخول */
-        .auth-screen { text-align: center; width: 100%; max-width: 300px; }
+        .container { width: 100%; max-width: 400px; background: var(--card); border-radius: 15px; border: 1px solid var(--gold); overflow: hidden; }
         .hidden { display: none !important; }
-
-        .container { width: 100%; max-width: 500px; background: var(--card); border-radius: 15px; border: 1px solid var(--gold); overflow: hidden; display: flex; flex-direction: column; position: relative; }
-        
-        /* لوحة المعلومات الجانبية (أو العلوية في الموبايل) */
-        .user-sidebar { background: #252525; padding: 10px; border-bottom: 1px solid var(--gold); display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
-        .user-info span { color: var(--gold); font-weight: bold; }
-
-        .flag { height: 40px; background: linear-gradient(to bottom, #007a3d 33%, #fff 33% 66%, #000 66%); display: flex; justify-content: center; align-items: center; }
-        .stars { color: red; font-size: 18px; letter-spacing: 5px; }
-
-        .content { padding: 20px; }
+        .sidebar { background: #252525; padding: 12px; border-bottom: 1px solid var(--gold); display: flex; justify-content: space-between; font-size: 13px; }
+        .content { padding: 20px; text-align: center; }
         input, select, textarea, button { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; box-sizing: border-box; font-size: 14px; }
         button { background: var(--gold); color: black; font-weight: bold; cursor: pointer; border: none; }
-        label { display: block; margin-bottom: 5px; font-size: 12px; color: var(--gold); }
+        button:disabled { background: #555; cursor: not-allowed; }
+        label { display: block; text-align: right; margin-bottom: 5px; font-size: 12px; color: var(--gold); }
     </style>
 </head>
 <body>
 
-<div id="step1" class="auth-screen">
-    <h3 style="color:var(--gold)">تسجيل دخول بالرقم</h3>
-    <input type="tel" id="userPhone" placeholder="9639xxxxxxxx" style="text-align: center;">
-    <button onclick="sendOTP()">إرسال كود التحقق</button>
+<div id="loginSection" class="container">
+    <div class="content">
+        <h3 style="color:var(--gold)">نظام الرسائل السحابي</h3>
+        <input type="tel" id="userPhone" placeholder="9639xxxxxxxx" style="text-align: center;">
+        <button id="otpBtn" onclick="sendOTP()">إرسال كود الدخول</button>
+    </div>
 </div>
 
-<div id="step2" class="auth-screen hidden">
-    <h3 style="color:var(--gold)">أدخل كود التحقق</h3>
-    <p style="font-size: 12px; color: #888;">تم إرسال كود لرقمتك عبر SMS</p>
-    <input type="number" id="otpInput" placeholder="----" style="text-align: center; font-size: 20px; letter-spacing: 10px;">
-    <button onclick="verifyOTP()">تأكيد الدخول</button>
+<div id="otpSection" class="container hidden">
+    <div class="content">
+        <h3 style="color:var(--gold)">تأكيد الهوية</h3>
+        <input type="number" id="otpInput" placeholder="أدخل الكود المرسل" style="text-align: center; font-size: 18px;">
+        <button onclick="verifyOTP()">دخول للنظام</button>
+    </div>
 </div>
 
 <div id="mainApp" class="container hidden">
-    <div class="user-sidebar">
-        <div class="user-info">الرقم: <span id="displayNum"></span></div>
-        <div class="user-info">الرصيد: <span id="displayLimit"></span></div>
+    <div class="sidebar">
+        <span>الرقم: <b id="displayNum"></b></span>
+        <span>الرصيد: <b id="displayLimit" style="color:var(--gold)"></b></span>
     </div>
-    <div class="flag"><div class="stars">★★★</div></div>
     <div class="content">
         <label>المعرف (Sender ID):</label>
         <select id="sid">
             <option value="Amgad-sms">Amgad-sms</option>
             <option value="ciedco-sms">ciedco-sms</option>
         </select>
-
-        <label>أرقام المستلمين (سطر جديد):</label>
-        <textarea id="mno" rows="4" placeholder="9639xxxxxxxx"></textarea>
-
-        <label>الرسالة:</label>
-        <textarea id="msg" rows="2" maxlength="70" placeholder="اكتب رسالتك..."></textarea>
-
-        <button id="sendBtn">بدء الإرسال المتسلسل</button>
+        <textarea id="mno" rows="4" placeholder="الأرقام (رقم في كل سطر)"></textarea>
+        <textarea id="msg" rows="2" maxlength="70" placeholder="نص الرسالة..."></textarea>
+        <button id="sendBtn">بدء الإرسال وتحديث الرصيد</button>
+        <div id="status" style="font-size: 11px; color: #888; margin-top: 5px;"></div>
     </div>
 </div>
 
 <script>
-    // --- قاعدة بيانات المستخدمين (الأرقام المسموح لها بالدخول) ---
-    const AUTHORIZED_USERS = {
-        "963968899922": { name: "أمجد", limit: 500 },
-        "963958919583": { name: "تجربة", limit: 50 }
-    };
+    // الرابط السحابي الخاص بك (تم ربطه بنجاح)
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQtvff01RLH9U_ZDEkHpkfCRsHQotbXP0PQUjqfu42ZIidsA2cYR4sLq9l0VaEvsg/exec";
 
-    const API_CONFIG = {
+    const CIEDCO = {
         USER: "appsyria00@gmail.com",
-        PASS: "sham09688999222",
-        TG_TOKEN: '8738594852:AAFeuB51ZknBIkZXfhJn6_fM4pL4ahte8Rg',
-        CHAT_ID: '1611398303'
+        PASS: "sham09688999222"
     };
 
-    let generatedOTP = null;
-    let currentUserData = null;
-    let currentPhone = "";
+    let generatedOTP, currentPhone, userBalance;
 
-    async function notifyTG(txt) {
-        try { await fetch(`https://api.telegram.org/bot${API_CONFIG.TG_TOKEN}/sendMessage?chat_id=${API_CONFIG.CHAT_ID}&text=${encodeURIComponent(txt)}`); } catch(e){}
-    }
-
-    // إرسال كود OTP عبر بوابة CIEDCO
     async function sendOTP() {
         const phone = document.getElementById('userPhone').value.trim();
-        if (!AUTHORIZED_USERS[phone]) return alert("عذراً، هذا الرقم غير مسجل في النظام.");
+        const btn = document.getElementById('otpBtn');
+        if(!phone.startsWith('963')) return alert("يرجى إدخال الرقم بالصيغة الدولية 963");
 
-        currentPhone = phone;
-        currentUserData = AUTHORIZED_USERS[phone];
-        generatedOTP = Math.floor(1000 + Math.random() * 9000); // توليد كود من 4 أرقام
+        btn.disabled = true;
+        btn.innerText = "جاري التحقق من الرقم...";
 
-        const smsText = `كود التحقق الخاص بك هو: ${generatedOTP}`;
-        const hexMsg = Array.from(smsText).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
-        const targetUrl = `http://www.ciedco-sms.net/api/sendsms.php?username=${API_CONFIG.USER}&password=${API_CONFIG.PASS}&mno=${phone}&msg=${hexMsg}&sid=Amgad-sms&fl=0&mt=1`;
-        
         try {
-            await notifyTG(`🔑 طلب دخول بالرقم: ${phone}\nالكود المولد: ${generatedOTP}`);
-            await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`);
-            
-            document.getElementById('step1').classList.add('hidden');
-            document.getElementById('step2').classList.remove('hidden');
+            const res = await fetch(`${SCRIPT_URL}?phone=${phone}&action=get`);
+            const data = await res.json();
+
+            if (data !== "NotFound") {
+                currentPhone = phone;
+                userBalance = data.limit;
+                generatedOTP = Math.floor(1000 + Math.random() * 9000);
+                
+                const smsText = `كود التحقق الخاص بك: ${generatedOTP}`;
+                const hexMsg = Array.from(smsText).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
+                const url = `http://www.ciedco-sms.net/api/sendsms.php?username=${CIEDCO.USER}&password=${CIEDCO.PASS}&mno=${phone}&msg=${hexMsg}&sid=Amgad-sms&fl=0&mt=1`;
+                
+                await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
+                
+                document.getElementById('loginSection').classList.add('hidden');
+                document.getElementById('otpSection').classList.remove('hidden');
+            } else {
+                alert("هذا الرقم غير مسجل في جدول البيانات!");
+                btn.disabled = false;
+                btn.innerText = "إرسال كود الدخول";
+            }
         } catch (e) {
-            alert("فشل إرسال كود التحقق. حاول مجدداً.");
+            alert("حدث خطأ في الاتصال بالسيرفر السحابي");
+            btn.disabled = false;
         }
     }
 
-    // التحقق من كود OTP
     function verifyOTP() {
-        const input = document.getElementById('otpInput').value;
-        if (input == generatedOTP) {
-            document.getElementById('step2').classList.add('hidden');
+        if (document.getElementById('otpInput').value == generatedOTP) {
+            document.getElementById('otpSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
-            
             document.getElementById('displayNum').innerText = currentPhone;
-            document.getElementById('displayLimit').innerText = currentUserData.limit + " رسالة";
-            
-            notifyTG(`✅ نجح التحقق لرقم: ${currentPhone}`);
-        } else {
-            alert("كود التحقق غير صحيح!");
-        }
+            document.getElementById('displayLimit').innerText = userBalance;
+        } else { alert("الكود غير صحيح!"); }
     }
 
-    // الإرسال الرئيسي
     document.getElementById('sendBtn').onclick = async () => {
         const btn = document.getElementById('sendBtn');
+        const status = document.getElementById('status');
         const mnoInput = document.getElementById('mno').value;
         const msg = document.getElementById('msg').value;
         const sid = document.getElementById('sid').value;
 
-        const mnoArray = mnoInput.split(/\r?\n/).map(num => num.replace(/\D/g, '')).filter(num => num.startsWith('963'));
-        
-        if (mnoArray.length > currentUserData.limit) return alert(`رصيدك المتبقي ${currentUserData.limit} رسالة فقط.`);
-        if (mnoArray.length === 0 || !msg) return alert("أدخل البيانات");
+        const mnoArray = mnoInput.split(/\r?\n/).map(n => n.replace(/\D/g,'')).filter(n => n.startsWith('963'));
+
+        if (mnoArray.length > userBalance) return alert(`رصيدك المتبقي ${userBalance} رسالة فقط!`);
+        if (mnoArray.length === 0 || !msg) return alert("يرجى إدخال الأرقام والرسالة");
 
         btn.disabled = true;
-        let count = 0;
-
-        await notifyTG(`🚀 حملة جديدة من الرقم: ${currentPhone}\nالعدد: ${mnoArray.length}\nالمحتوى: ${msg}`);
-
+        let success = 0;
         const hexMsg = Array.from(msg).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
 
         for (let i = 0; i < mnoArray.length; i++) {
-            const currentNum = mnoArray[i];
-            const targetUrl = `http://www.ciedco-sms.net/api/sendsms.php?username=${API_CONFIG.USER}&password=${API_CONFIG.PASS}&mno=${currentNum}&msg=${hexMsg}&sid=${sid}&fl=0&mt=1`;
+            status.innerText = `جاري إرسال ${i+1} من ${mnoArray.length}...`;
+            const num = mnoArray[i];
+            const url = `http://www.ciedco-sms.net/api/sendsms.php?username=${CIEDCO.USER}&password=${CIEDCO.PASS}&mno=${num}&msg=${hexMsg}&sid=${sid}&fl=0&mt=1`;
             
             try {
-                const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`);
+                const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
                 const result = await res.text();
                 if (result.includes("OK") || result.length > 10) {
-                    count++;
-                    currentUserData.limit--; // إنقاص الرصيد فوراً
-                    document.getElementById('displayLimit').innerText = currentUserData.limit + " رسالة";
+                    success++;
+                    userBalance--;
+                    document.getElementById('displayLimit').innerText = userBalance;
+                    // تحديث الجدول السحابي لحظياً
+                    fetch(`${SCRIPT_URL}?phone=${currentPhone}&action=update&newLimit=${userBalance}`);
                 }
             } catch (e) {}
             await new Promise(r => setTimeout(r, 800));
         }
 
-        alert(`اكتملت العملية بنجاح! تم إرسال ${count} رسائل.`);
+        alert(`اكتمل! تم إرسال ${success} رسائل وتحديث الرصيد في الجدول.`);
         btn.disabled = false;
+        status.innerText = "";
     };
 </script>
 </body>
 </html>
+
