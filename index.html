@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إرسال CIEDCO SMS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #d4af37; --bg: #1a1a1a; --card-bg: #262626; }
+        body { font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: white; margin: 0; padding: 10px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .container { max-width: 400px; width: 100%; background: var(--card-bg); border-radius: 15px; border: 1px solid var(--primary); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        /* العلم السوري المتحرك */
+        .flag-header { position: relative; height: 60px; background: linear-gradient(to bottom, #007a3d 33.3%, #ffffff 33.3% 66.6%, #000000 66.6%); display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .flag-header::after { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent); background-size: 50px 50px; animation: move-flag 3s linear infinite; opacity: 0.3; }
+        @keyframes move-flag { 0% { background-position: 0 0; } 100% { background-position: 100px 0; } }
+        .stars { position: absolute; color: #ee1c25; font-size: 20px; display: flex; gap: 10px; z-index: 2; }
+
+        .form-content { padding: 20px; }
+        h2 { text-align: center; color: var(--primary); margin: 10px 0; font-size: 20px; }
+        .note { background: rgba(212, 175, 55, 0.1); border: 1px dashed var(--primary); padding: 8px; border-radius: 8px; font-size: 11px; margin-bottom: 15px; text-align: center; color: #eee; }
+        
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px; color: var(--primary); }
+        input, select, textarea { width: 100%; padding: 10px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #444; background: #333; color: white; box-sizing: border-box; font-family: 'Tajawal'; }
+        
+        button { width: 100%; padding: 12px; background: var(--primary); border: none; border-radius: 8px; color: black; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        button:disabled { background: #555; cursor: not-allowed; }
+        
+        .footer { text-align: center; margin-top: 15px; border-top: 1px solid #444; padding-top: 10px; }
+        .footer a { color: var(--primary); text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="flag-header"><div class="stars">★ ★ ★</div></div>
+    <div class="form-content">
+        <h2>جديدنا في سوريا</h2>
+        <div class="note">نظام الإرسال المباشر عبر بوابة CIEDCO</div>
+
+        <form id="smsForm">
+            <label>معرف المرسل (Sender ID):</label>
+            <select id="sid">
+                <option value="Amgad-sms">Amgad-sms</option>
+                <option value="ciedco-sms">ciedco-sms</option>
+            </select>
+
+            <label>رقم المستلم (صيغة: 9639xxxxxxxx):</label>
+            <input type="tel" id="mno" placeholder="مثال: 963988477400" required>
+
+            <label>نص الرسالة (بالعربي بحد أقصى 69 حرف):</label>
+            <textarea id="msg" rows="3" maxlength="69" placeholder="اكتب رسالتك هنا..." required></textarea>
+
+            <button type="submit" id="subBtn">إرسال عبر API الآن</button>
+        </form>
+        <div class="footer"><a href="tel:0968899922">الدعم الفني: 0968899922</a></div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('smsForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('subBtn');
+        
+        // البيانات الخاصة بك بناءً على طلبك
+        const user = "appsyria00@gmail.com";
+        const pass = "sham09688999222";
+        
+        const mno = document.getElementById('mno').value;
+        const msg = document.getElementById('msg').value;
+        const sid = document.getElementById('sid').value;
+
+        btn.disabled = true;
+        btn.innerText = "جاري الاتصال بالسيرفر...";
+
+        /* ملاحظة تقنية: المتصفحات تمنع طلبات API المباشرة (CORS) لأسباب أمنية.
+           لذلك نستخدم واجهة تحويل بسيطة لضمان وصول الطلب لسيرفر ciedco.
+        */
+        const apiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(
+            `http://www.ciedco-sms.net/api/sendsms.php?username=${user}&password=${pass}&mno=${mno}&msg=${msg}&sid=${sid}&fl=0&mt=1`
+        )}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            const data = await response.json();
+            const result = data.contents;
+
+            [span_3](start_span)[span_4](start_span)if (result.includes("200")) { // كود النجاح يبدأ بـ 200 حسب الدليل[span_3](end_span)[span_4](end_span)
+                alert("✅ تم الإرسال بنجاح! كود العملية: " + result);
+            } else {
+                alert("❌ خطأ من السيرفر: " + result);
+            }
+        } catch (error) {
+            alert("⚠️ عذراً، تعذر الاتصال ببوابة الإرسال. تأكد من اتصال الإنترنت.");
+        }
+
+        btn.disabled = false;
+        btn.innerText = "إرسال عبر API الآن";
+    });
+</script>
+</body>
+</html>
+
