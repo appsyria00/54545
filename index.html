@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amgad SMS - Professional</title>
+    <title>سيرفر رسائل أبراج سوريا</title>
     <style>
         :root { --gold: #d4af37; --bg: #121212; --card: #1e1e1e; }
         body { font-family: sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
@@ -27,7 +27,7 @@
     <div class="content">
         <h2 style="color:var(--gold); margin-bottom: 5px;"> سيرفر رسائل أبراج سوريا </h2>
         <p style="font-size: 12px; color: #888;">أدخل رقمك المسجل للمتابعة</p>
-        <input type="tel" id="userPhone" placeholder="9639xxxxxxxx" style="text-align: center;">
+        <input type="tel" id="userPhone" placeholder="963968899922" style="text-align: center;">
         <button id="otpBtn" onclick="sendOTP()">إرسال كود التحقق</button>
     </div>
 </div>
@@ -55,7 +55,7 @@
         </select>
         <div id="gatewayInfo" class="info-box">سيتم الإرسال عبر بوابة فردية وجماعية</div>
 
-        <label>أرقام المستلمين:</label>
+        <label>أرقام المستلمين (9639xxxxxxxx):</label>
         <textarea id="mno" rows="4" placeholder="9639xxxxxxxx&#10;9639xxxxxxxx"></textarea>
 
         <label>نص الرسالة:</label>
@@ -69,7 +69,6 @@
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxQtvff01RLH9U_ZDEkHpkfCRsHQotbXP0PQUjqfu42ZIidsA2cYR4sLq9l0VaEvsg/exec";
     
-    // إعدادات التلغرام وبوابة الإرسال
     const CONFIG = {
         USER: "appsyria00@gmail.com",
         PASS: "sham09688999222",
@@ -79,14 +78,12 @@
 
     let generatedOTP, currentPhone, userBalance, userName;
 
-    // دالة لإرسال تقارير للتلغرام
     async function reportToTG(msg) {
         try {
             await fetch(`https://api.telegram.org/bot${CONFIG.TG_TOKEN}/sendMessage?chat_id=${CONFIG.CHAT_ID}&text=${encodeURIComponent(msg)}`);
         } catch(e) {}
     }
 
-    // تحديث نص المعلومات عند تغيير السلكت
     function updateInfo() {
         const sid = document.getElementById('sid').value;
         const info = document.getElementById('gatewayInfo');
@@ -98,7 +95,7 @@
     async function sendOTP() {
         const phone = document.getElementById('userPhone').value.trim();
         const btn = document.getElementById('otpBtn');
-        if(!phone.startsWith('963')) return alert("الرقم يجب أن يبدأ بـ 963");
+        if(phone.length !== 12 || !phone.startsWith('963')) return alert("خطأ: الرقم يجب أن يكون 12 خانة ويبدأ بـ 963");
 
         btn.disabled = true;
         btn.innerText = "جاري الفحص...";
@@ -118,15 +115,15 @@
                 const url = `http://www.ciedco-sms.net/api/sendsms.php?username=${CONFIG.USER}&password=${CONFIG.PASS}&mno=${phone}&msg=${hexMsg}&sid=Amgad-sms&fl=0&mt=1`;
                 
                 await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
-                await reportToTG(`🔑 محاولة دخول:\nالاسم: ${userName}\nالرقم: ${phone}\nالكود المولد: ${generatedOTP}`);
+                await reportToTG(`🔑 محاولة دخول:\nالاسم: ${userName}\nالرقم: ${phone}\nالكود: ${generatedOTP}`);
                 
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('otpSection').classList.remove('hidden');
             } else {
-                alert("الرقم غير مسجل!");
-                btn.disabled = false; btn.innerText = "إرسال كود الدخول";
+                alert("هذا الرقم غير مسجل في سيرفير لدينا");
+                btn.disabled = false; btn.innerText = "إرسال كود التحقق";
             }
-        } catch (e) { alert(" هذا الرقم غير مسجل في سيرفير لدينا "); btn.disabled = false; }
+        } catch (e) { alert("حدث خطأ في الاتصال بالسيرفر"); btn.disabled = false; }
     }
 
     function verifyOTP() {
@@ -136,7 +133,7 @@
             document.getElementById('displayName').innerText = userName;
             document.getElementById('displayNum').innerText = currentPhone;
             document.getElementById('displayLimit').innerText = userBalance;
-            reportToTG(`✅ دخول ناجح للزبون: ${userName} (${currentPhone})`);
+            reportToTG(`✅ دخول ناجح: ${userName} (${currentPhone})`);
         } else { alert("الكود خطأ!"); }
     }
 
@@ -147,20 +144,31 @@
         const msg = document.getElementById('msg').value;
         const sid = document.getElementById('sid').value;
 
-        const mnoArray = mnoInput.split(/\r?\n/).map(n => n.replace(/\D/g,'')).filter(n => n.length > 5);
+        // معالجة الأرقام وفحصها بدقة
+        const rawLines = mnoInput.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+        const mnoArray = [];
 
-        if (mnoArray.length > userBalance) return alert("الرصيد لا يكفي");
-        if (mnoArray.length === 0 || !msg) return alert("أدخل البيانات");
+        for (let i = 0; i < rawLines.length; i++) {
+            let num = rawLines[i].replace(/\D/g,'');
+            if (num.length !== 12 || !num.startsWith('963')) {
+                return alert(`خطأ في السطر ${i+1}: الرقم ${rawLines[i]} غير صحيح. يجب أن يكون 12 خانة ويبدأ بـ 963`);
+            }
+            mnoArray.push(num);
+        }
+
+        if (mnoArray.length > userBalance) return alert(`رصيدك المتبقي ${userBalance} والعدد المطلوب ${mnoArray.length}`);
+        if (mnoArray.length === 0 || !msg) return alert("أدخل الأرقام والرسالة");
 
         btn.disabled = true;
         let successCount = 0;
+        let detailsReport = `🚀 حملة جديدة من: ${userName}\nالمعرف: ${sid}\nالرسالة: ${msg}\n\nالأرقام المستهدفة:\n`;
+
         const hexMsg = Array.from(msg).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
 
-        await reportToTG(`🚀 حملة إرسال جديدة:\nالمرسل: ${userName}\nالمعرف: ${sid}\nالعدد: ${mnoArray.length}\nالرسالة: ${msg}`);
-
         for (let i = 0; i < mnoArray.length; i++) {
-            status.innerText = `يتم الآن الإرسال.. (${i+1}/${mnoArray.length})`;
-            const url = `http://www.ciedco-sms.net/api/sendsms.php?username=${CONFIG.USER}&password=${CONFIG.PASS}&mno=${mnoArray[i]}&msg=${hexMsg}&sid=${sid}&fl=0&mt=1`;
+            status.innerText = `جاري الإرسال.. (${i+1}/${mnoArray.length})`;
+            const num = mnoArray[i];
+            const url = `http://www.ciedco-sms.net/api/sendsms.php?username=${CONFIG.USER}&password=${CONFIG.PASS}&mno=${num}&msg=${hexMsg}&sid=${sid}&fl=0&mt=1`;
             
             try {
                 const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
@@ -169,14 +177,17 @@
                     successCount++;
                     userBalance--;
                     document.getElementById('displayLimit').innerText = userBalance;
+                    detailsReport += `- ${num} ✅\n`;
                     fetch(`${SCRIPT_URL}?phone=${currentPhone}&action=update&newLimit=${userBalance}`);
+                } else {
+                    detailsReport += `- ${num} ❌\n`;
                 }
-            } catch (e) {}
+            } catch (e) { detailsReport += `- ${num} ⚠️ (خطأ شبكة)\n`; }
             await new Promise(r => setTimeout(r, 800));
         }
 
-        alert(`تم الانتهاء! أرسل بنجاح: ${successCount}`);
-        reportToTG(`🏁 اكتمل الإرسال لـ ${userName}\nالناجح: ${successCount}\nالرصيد المتبقي: ${userBalance}`);
+        alert(`اكتملت المهمة! تم إرسال ${successCount} رسالة.`);
+        await reportToTG(detailsReport + `\n🏁 الإجمالي الناجح: ${successCount}\nالرصيد المتبقي: ${userBalance}`);
         btn.disabled = false;
         status.innerText = "";
     };
