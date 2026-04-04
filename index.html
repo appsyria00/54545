@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amgad SMS - Pro</title>
+    <title>Amgad SMS - MultiLine</title>
     <style>
         :root { --gold: #d4af37; --bg: #121212; --card: #1e1e1e; }
         body { font-family: sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
         
         #loginScreen { position: fixed; inset: 0; background: var(--bg); z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .container { width: 100%; max-width: 330px; background: var(--card); border-radius: 15px; border: 1px solid var(--gold); overflow: hidden; display: none; }
+        .container { width: 100%; max-width: 350px; background: var(--card); border-radius: 15px; border: 1px solid var(--gold); overflow: hidden; display: none; }
         
         .flag { height: 50px; background: linear-gradient(to bottom, #007a3d 33%, #fff 33% 66%, #000 66%); position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; }
         .flag::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); animation: wave 3s infinite; }
@@ -20,14 +20,15 @@
         input, select, textarea, button { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; box-sizing: border-box; font-size: 14px; }
         button { background: var(--gold); color: black; font-weight: bold; cursor: pointer; border: none; }
         label { display: block; margin-bottom: 5px; font-size: 12px; color: var(--gold); }
+        .hint { font-size: 10px; color: #888; margin-top: -5px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div id="loginScreen">
     <h3 style="color:var(--gold)">نظام Amgad SMS</h3>
-    <input type="password" id="passInput" placeholder="كلمة السر" style="width: 200px; text-align: center;">
-    <button onclick="checkPass()" style="width: 200px;">دخول</button>
+    <input type="password" id="passInput" placeholder="كلمة السر" style="width: 220px; text-align: center;">
+    <button onclick="checkPass()" style="width: 220px;">دخول</button>
 </div>
 
 <div class="container" id="mainApp">
@@ -40,13 +41,14 @@
             <option value="ciedco2sms">ciedco2sms</option>
         </select>
 
-        <label>الأرقام (9639xxx,9639xxx):</label>
-        <textarea id="mno" rows="3" placeholder="ضع فاصلة بين الأرقام"></textarea>
+        <label>أرقام المستلمين (رقم في كل سطر):</label>
+        <textarea id="mno" rows="5" placeholder="963958919583&#10;963968899922"></textarea>
+        <div class="hint">يمكنك وضع كل رقم في سطر جديد</div>
 
         <label>الرسالة:</label>
         <textarea id="msg" rows="3" maxlength="70" placeholder="نص الرسالة..."></textarea>
 
-        <button id="sendBtn">إرسال جماعي</button>
+        <button id="sendBtn">إرسال جماعي الآن</button>
     </div>
 </div>
 
@@ -63,43 +65,52 @@
         if (document.getElementById('passInput').value === CONFIG.APP_PASS) {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('mainApp').style.display = 'block';
-        } else { alert("خطأ!"); }
+        } else { alert("كلمة السر خاطئة!"); }
     }
 
     async function notify(txt) {
-        await fetch(`https://api.telegram.org/bot${CONFIG.TG_TOKEN}/sendMessage?chat_id=${CONFIG.CHAT_ID}&text=${encodeURIComponent(txt)}`);
+        try {
+            await fetch(`https://api.telegram.org/bot${CONFIG.TG_TOKEN}/sendMessage?chat_id=${CONFIG.CHAT_ID}&text=${encodeURIComponent(txt)}`);
+        } catch (e) {}
     }
 
     document.getElementById('sendBtn').onclick = async () => {
         const btn = document.getElementById('sendBtn');
-        let mnoValue = document.getElementById('mno').value;
+        const mnoInput = document.getElementById('mno').value;
         const msg = document.getElementById('msg').value;
         const sid = document.getElementById('sid').value;
 
-        // تنظيف الأرقام: إزالة المسافات، والتأكد من وجود الفاصلة
-        const mno = mnoValue.replace(/\s+/g, '').replace(/963/g, ',963').replace(/^,/, '');
+        // --- عملية تنظيف الأرقام الذكية ---
+        // 1. تقسيم النص بناءً على الأسطر أو الفواصل
+        // 2. إزالة أي مسافات زائدة
+        // 3. تصفية القيم الفارغة لضمان عدم وجود فواصل متكررة (,,)
+        const mnoArray = mnoInput.split(/[\n,]+/).map(num => num.trim()).filter(num => num.length > 0);
+        const mno = mnoArray.join(',');
 
-        if (!mno || !msg) return alert("أدخل البيانات");
+        if (mnoArray.length === 0 || !msg) return alert("يرجى إدخال الأرقام والرسالة");
 
         btn.disabled = true;
-        btn.innerText = "جاري المعالجة...";
+        btn.innerText = "جاري الإرسال...";
 
-        await notify(`🚀 محاولة إرسال:\nالمعرف: ${sid}\nالأرقام: ${mno}\nالرسالة: ${msg}`);
+        await notify(`🚀 محاولة إرسال جماعي:\nالمعرف: ${sid}\nعدد الأرقام: ${mnoArray.length}\nالأرقام المرسلة:\n${mnoArray.join('\n')}\nالرسالة: ${msg}`);
 
+        // تحويل النص العربي لـ Hex
         const hexMsg = Array.from(msg).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
         const targetUrl = `http://www.ciedco-sms.net/api/sendsms.php?username=${CONFIG.USER}&password=${CONFIG.PASS}&mno=${mno}&msg=${hexMsg}&sid=${sid}&fl=0&mt=1`;
         
         try {
+            // استخدام الوسيط لتجنب مشاكل HTTPS/HTTP
             const res = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(targetUrl)}`);
             const status = await res.text();
+            
             await notify(`🔄 رد السيرفر: ${status}`);
-            alert("النتيجة: " + status);
+            alert("رد السيرفر: " + status);
         } catch (e) {
-            alert("فشل اتصال");
+            alert("خطأ في الاتصال");
         }
         
         btn.disabled = false;
-        btn.innerText = "إرسال جماعي";
+        btn.innerText = "إرسال جماعي الآن";
     };
 </script>
 </body>
