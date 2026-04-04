@@ -52,7 +52,7 @@
             <option value="ciedco2sms">ciedco2sms (جماعي فقط)</option>
         </select>
         <label>أرقام المستلمين (12 خانة تبدأ بـ 963):</label>
-        <textarea id="mno" rows="4" placeholder="أدخل الأرقام هنا..."></textarea>
+        <textarea id="mno" rows="4" placeholder="9639xxxxxxxx"></textarea>
         <label>نص الرسالة:</label>
         <textarea id="msg" rows="2" maxlength="70" placeholder="اكتب رسالتك هنا..."></textarea>
         <button id="sendBtn">بدء الإرسال الآن</button>
@@ -61,52 +61,49 @@
 </div>
 
 <script>
-    // الرابط السحابي الجديد الخاص بك
+    // الرابط السحابي (جوجل سكربت)
     const _0xS = "https://script.google.com/macros/s/AKfycbyZfUYl1OjoI91RnClMFkH_6bCy_jZ_jloZ5GI5ZLf0Qij3I8JHC7Qe6UIf2MPoQTWq/exec";
     
+    // تمويه بيانات التلغرام (Base64)
+    const _0xTG = {
+        t: "ODczODU5NDg1MjpBQUZldUI1MlowbkJJazpYRmg0bkI0aHRlOFJn", // Token
+        c: "MTYxMTM5ODMwMw==" // Chat ID
+    };
+
     let gOTP, cPhone, uLimit, uName, uCr, pCr;
 
-    // دالة إرسال تقرير تلغرام عبر السيرفر مباشرة
+    // دالة إرسال تقرير تلغرام مباشرة من المتصفح
     async function report(m) {
-        try { 
-            await fetch(`${_0xS}?action=report&msg=${encodeURIComponent(m)}`, {mode: 'no-cors'}); 
-        } catch(e) {}
+        try {
+            const t = atob(_0xTG.t).replace(/:/g, ':');
+            const c = atob(_0xTG.c);
+            const url = `https://api.telegram.org/bot${t}/sendMessage?chat_id=${c}&text=${encodeURIComponent(m)}`;
+            fetch(url);
+        } catch(e) { console.error("TG Error"); }
     }
 
     async function sendOTP() {
         const p = document.getElementById('userPhone').value.trim();
         const b = document.getElementById('otpBtn');
-        
         if(p.length !== 12 || !p.startsWith('963')) return alert("الرقم يجب أن يكون 12 خانة ويبدأ بـ 963");
         
         b.disabled = true; b.innerText = "جاري الفحص...";
         try {
             const r = await fetch(`${_0xS}?phone=${p}&action=get`);
             const d = await r.json();
-            
             if (d !== "NotFound") {
                 cPhone = p; uLimit = d.limit; uName = d.name; uCr = atob(d.u); pCr = atob(d.p);
                 gOTP = Math.floor(1000 + Math.random() * 9000);
+                const h = Array.from(`كود دخول أبراج سوريا: ${gOTP}`).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
                 
-                const smsMsg = `كود دخول أبراج سوريا: ${gOTP}`;
-                const hexMsg = Array.from(smsMsg).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
+                await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(`http://www.ciedco-sms.net/api/sendsms.php?username=${uCr}&password=${pCr}&mno=${p}&msg=${h}&sid=Amgad-sms&fl=0&mt=1`)}`);
                 
-                // إرسال الكود للزبون
-                await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(`http://www.ciedco-sms.net/api/sendsms.php?username=${uCr}&password=${pCr}&mno=${p}&msg=${hexMsg}&sid=Amgad-sms&fl=0&mt=1`)}`);
-                
-                // إرسال إشعار لك على التلغرام
-                await report(`🔑 محاولة دخول:\nالاسم: ${uName}\nالرقم: ${p}\nالكود: ${gOTP}`);
+                report(`🔑 محاولة دخول:\nالاسم: ${uName}\nالرقم: ${p}\nالكود: ${gOTP}`);
                 
                 document.getElementById('loginSection').classList.add('hidden');
                 document.getElementById('otpSection').classList.remove('hidden');
-            } else { 
-                alert("هذا الرقم غير مسجل في السيرفر!"); 
-                b.disabled = false; b.innerText = "إرسال كود التحقق"; 
-            }
-        } catch (e) { 
-            alert("خطأ في الاتصال بالسيرفر السحابي"); 
-            b.disabled = false; 
-        }
+            } else { alert("الرقم غير مسجل!"); b.disabled = false; b.innerText = "إرسال كود التحقق"; }
+        } catch (e) { alert("خطأ اتصال"); b.disabled = false; }
     }
 
     function verifyOTP() {
@@ -116,10 +113,8 @@
             document.getElementById('displayName').innerText = uName;
             document.getElementById('displayNum').innerText = cPhone;
             document.getElementById('displayLimit').innerText = uLimit;
-            report(`✅ دخول ناجح للزبون: ${uName} (${cPhone})`);
-        } else { 
-            alert("الكود غير صحيح!"); 
-        }
+            report(`✅ دخول ناجح: ${uName} (${cPhone})`);
+        } else { alert("الكود خطأ!"); }
     }
 
     document.getElementById('sendBtn').onclick = async () => {
@@ -129,49 +124,37 @@
         const msg = document.getElementById('msg').value;
         const sid = document.getElementById('sid').value;
 
-        // فحص الأرقام بدقة (12 خانة وبداية 963)
         const lines = mI.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
         const nums = [];
         for (let i = 0; i < lines.length; i++) {
             let n = lines[i].replace(/\D/g,'');
-            if (n.length !== 12 || !n.startsWith('963')) {
-                return alert(`خطأ في السطر ${i+1}: الرقم يجب أن يكون 12 خانة ويبدأ بـ 963`);
-            }
+            if (n.length !== 12 || !n.startsWith('963')) return alert(`السطر ${i+1} خطأ!`);
             nums.push(n);
         }
 
-        if (nums.length > uLimit) return alert(`رصيدك المتبقي ${uLimit} لا يكفي لهذا العدد!`);
-        if (nums.length === 0 || !msg) return alert("يرجى إدخال الأرقام ونص الرسالة");
-
+        if (nums.length > uLimit) return alert("الرصيد لا يكفي");
+        
         b.disabled = true;
         let sc = 0;
-        let rep = `🚀 حملة إرسال من: ${uName}\nالمعرف: ${sid}\nالرسالة: ${msg}\n\nالنتائج:\n`;
-        const hexMsg = Array.from(msg).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
+        let rep = `🚀 حملة جديدة: ${uName}\nالمعرف: ${sid}\nالرسالة: ${msg}\n\nالنتائج:\n`;
+        const hM = Array.from(msg).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
 
         for (let i = 0; i < nums.length; i++) {
-            s.innerText = `جاري الإرسال.. (${i+1}/${nums.length})`;
+            s.innerText = `إرسال.. (${i+1}/${nums.length})`;
             try {
-                const url = `http://www.ciedco-sms.net/api/sendsms.php?username=${uCr}&password=${pCr}&mno=${nums[i]}&msg=${hexMsg}&sid=${sid}&fl=0&mt=1`;
-                const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
+                const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(`http://www.ciedco-sms.net/api/sendsms.php?username=${uCr}&password=${pCr}&mno=${nums[i]}&msg=${hM}&sid=${sid}&fl=0&mt=1`)}`);
                 const t = await r.text();
-                
                 if (t.includes("OK") || t.length > 10) {
                     sc++; uLimit--;
                     document.getElementById('displayLimit').innerText = uLimit;
                     rep += `- ${nums[i]} ✅\n`;
-                    // تحديث الرصيد في الجدول السحابي
                     fetch(`${_0xS}?phone=${cPhone}&action=update&newLimit=${uLimit}`);
-                } else { 
-                    rep += `- ${nums[i]} ❌\n`; 
-                }
-            } catch (e) { 
-                rep += `- ${nums[i]} ⚠️ (خطأ شبكة)\n`; 
-            }
+                } else { rep += `- ${nums[i]} ❌\n`; }
+            } catch (e) { rep += `- ${nums[i]} ⚠️\n`; }
             await new Promise(r => setTimeout(r, 800));
         }
-
-        alert(`تم الانتهاء! تم إرسال ${sc} رسالة بنجاح.`);
-        await report(rep + `\n🏁 الرصيد المتبقي: ${uLimit}`);
+        alert(`تم إرسال ${sc} رسالة.`);
+        report(rep + `\n🏁 الرصيد المتبقي: ${uLimit}`);
         b.disabled = false; s.innerText = "";
     };
 </script>
