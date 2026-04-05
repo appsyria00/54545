@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سيرفر رسائل أبراج سوريا</title>
     <style>
-        :root { --gold: #d4af37; --bg: #121212; --card: #1e1e1e; }
+        :root { --gold: #d4af37; --bg: #121212; --card: #1e1e1e; --neon: #39FF14; }
         body { font-family: sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
         .container { width: 100%; max-width: 450px; background: var(--card); border-radius: 15px; border: 1px solid var(--gold); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
         .hidden { display: none !important; }
         .sidebar { background: #252525; padding: 15px; border-bottom: 1px solid var(--gold); display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
-        .user-tag { background: var(--gold); color: black; padding: 2px 8px; border-radius: 4px; font-weight: bold; margin-left: 5px; }
+        .user-tag { background: var(--gold); color: black; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
         .content { padding: 20px; text-align: center; }
         input, select, textarea, button { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; box-sizing: border-box; font-size: 14px; outline: none; }
         input:focus { border-color: var(--gold); }
         button { background: var(--gold); color: black; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; }
         button:hover { opacity: 0.8; }
-        button:disabled { background: #555; cursor: not-allowed; }
+        button:disabled { background: #555; }
         label { display: block; text-align: right; margin-bottom: 5px; font-size: 12px; color: var(--gold); }
-        .switch-link { color: var(--gold); cursor: pointer; text-decoration: underline; font-size: 13px; }
+        .neon-note { color: var(--neon); font-size: 11px; font-weight: bold; margin-bottom: 15px; text-align: right; border: 1px dashed var(--neon); padding: 8px; border-radius: 5px; line-height: 1.5; }
+        .switch-link { color: var(--gold); cursor: pointer; text-decoration: underline; font-size: 13px; margin: 5px; display: inline-block; }
     </style>
 </head>
 <body>
@@ -28,53 +29,82 @@
         <h2 style="color:var(--gold);">تسجيل الدخول</h2>
         <input type="tel" id="loginPhone" placeholder="رقم الهاتف (9639...)">
         <input type="password" id="loginPass" placeholder="كلمة المرور">
-        <button id="loginBtn" onclick="login()">دخول</button>
-        <p style="font-size: 13px;">ليس لديك حساب؟ <span class="switch-link" onclick="showView('regSection')">إنشاء حساب جديد</span></p>
+        <button onclick="login()">دخول</button>
+        <p>
+            <span class="switch-link" onclick="showView('regSection')">إنشاء حساب</span> | 
+            <span class="switch-link" onclick="showView('forgotSection')">نسيت كلمة المرور؟</span>
+        </p>
+    </div>
+</div>
+
+<div id="forgotSection" class="container hidden">
+    <div class="content">
+        <h2 style="color:var(--gold);">استعادة الحساب</h2>
+        <p style="font-size: 12px; color: #aaa;">أدخل رقمك المسجل لإرسال كود التحقق</p>
+        <input type="tel" id="forgotPhone" placeholder="9639xxxxxxxx">
+        <button id="forgotBtn" onclick="sendResetOTP()">إرسال كود التغيير</button>
+        <p><span class="switch-link" onclick="showView('loginSection')">رجوع</span></p>
+    </div>
+</div>
+
+<div id="resetPassSection" class="container hidden">
+    <div class="content">
+        <h3 style="color:var(--gold)">تغيير كلمة المرور</h3>
+        <input type="number" id="resetOtpInput" placeholder="أدخل الكود">
+        <input type="password" id="newPassInput" placeholder="كلمة المرور الجديدة">
+        <button onclick="verifyAndReset()">تحديث الآن</button>
     </div>
 </div>
 
 <div id="regSection" class="container hidden">
     <div class="content">
-        <h2 style="color:var(--gold);">حساب جديد</h2>
+        <h2 style="color:var(--gold);">عضوية جديدة</h2>
         <input type="text" id="regName" placeholder="الاسم الكامل">
-        <input type="tel" id="regPhone" placeholder="رقم الهاتف (9639...)">
-        <input type="password" id="regPass" placeholder="اختر كلمة مرور">
-        <button id="regBtn" onclick="sendRegOTP()">إرسال كود التحقق</button>
-        <p style="font-size: 13px;"><span class="switch-link" onclick="showView('loginSection')">العودة لتسجيل الدخول</span></p>
+        <input type="tel" id="regPhone" placeholder="9639xxxxxxxx">
+        <input type="password" id="regPass" placeholder="كلمة المرور">
+        <button onclick="sendRegOTP()">إرسال كود التفعيل</button>
+        <p><span class="switch-link" onclick="showView('loginSection')">لديك حساب؟ دخول</span></p>
     </div>
 </div>
 
 <div id="otpSection" class="container hidden">
     <div class="content">
         <h3 style="color:var(--gold)">تأكيد الرقم</h3>
-        <p style="font-size: 12px;">أدخل الكود الذي وصلك في رسالة</p>
-        <input type="number" id="otpInput" placeholder="----" style="text-align: center; font-size: 22px;">
-        <button onclick="verifyAndRegister()">تأكيد الحساب</button>
+        <input type="number" id="otpInput" placeholder="أدخل الكود">
+        <button onclick="verifyAndRegister()">تفعيل الحساب</button>
     </div>
 </div>
 
 <div id="mainApp" class="container hidden">
     <div class="sidebar">
-        <div><span class="user-tag" id="displayName">..</span><span id="displayNum"></span></div>
-        <div>رصيدك: <b id="displayLimit" style="color:var(--gold); font-size: 16px;">0</b></div>
+        <div><span id="displayName" class="user-tag">..</span></div>
+        <div>رصيدك: <b id="displayLimit" style="color:var(--gold);">0</b></div>
     </div>
     <div class="content">
-        <label>المعرف (SID):</label>
+        <div class="neon-note">⚠️ ملاحظة: كتابة الأرقام تبدأ بـ 963 بدون صفر وبدون (+) مثال: 963968899922</div>
+        
+        <label>المعرف (Sender ID):</label>
         <select id="sid">
-            <option value="Amgad-sms">Amgad-sms</option>
-            <option value="ciedco-sms">ciedco-sms</option>
+            <option value="Amgad-sms">Amgad-sms (فردي وجماعي)</option>
+            <option value="ciedco-sms">ciedco-sms (فردي فقط)</option>
+            <option value="ciedco2sms">ciedco2sms (جماعي فقط)</option>
         </select>
-        <textarea id="mno" rows="4" placeholder="الأرقام (9639...)"></textarea>
-        <textarea id="msg" rows="2" maxlength="70" placeholder="نص الرسالة..."></textarea>
-        <button id="sendBtn">بدء الإرسال</button>
-        <div id="status" style="font-size: 12px; color: var(--gold); margin-top: 5px;"></div>
+
+        <label>أرقام المستلمين (رقم بكل سطر):</label>
+        <textarea id="mno" rows="4" placeholder="9639xxxxxxxx"></textarea>
+
+        <label>نص الرسالة:</label>
+        <textarea id="msg" rows="2" placeholder="اكتب رسالتك هنا..."></textarea>
+
+        <button id="sendBtn">بدء الإرسال الآن</button>
+        <div id="status" style="font-size: 11px; margin-top: 5px; color: var(--gold); font-weight: bold;"></div>
     </div>
 </div>
 
 <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzJsAiGbeSoWSVzSmmmy9pcHsbJQdNJx2fHLgwZ0XdyCUuTywsCPGnEbyuEBIlAtjfD/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzWd-CeGoULG8pgK32ZqCYGg9N3p8YxlB6HkEco8KTCr-CAXzrCSmxrp4hjJcMuUss/exec";
     const TG_CONFIG = { TOKEN: '8738594852:AAFeuB51ZknBIkZXfhJn6_fM4pL4ahte8Rg', CHAT_ID: '1611398303' };
-
+    
     let gOTP, tempUser, uLimit, uName, uCr, pCr, cPhone;
 
     function showView(id) {
@@ -83,86 +113,91 @@
     }
 
     async function reportToTG(m) {
-        try { fetch(`https://api.telegram.org/bot${TG_CONFIG.TOKEN}/sendMessage?chat_id=${TG_CONFIG.CHAT_ID}&text=${encodeURIComponent(m)}`); } catch(e) {}
+        fetch(`https://api.telegram.org/bot${TG_CONFIG.TOKEN}/sendMessage?chat_id=${TG_CONFIG.CHAT_ID}&text=${encodeURIComponent(m)}`);
     }
 
-    // تسجيل الدخول بكلمة المرور
     async function login() {
         const p = document.getElementById('loginPhone').value.trim();
         const s = document.getElementById('loginPass').value;
-        if(!p || !s) return alert("أدخل البيانات");
-
-        const btn = document.getElementById('loginBtn');
-        btn.disabled = true; btn.innerText = "جاري التحقق...";
-
+        if(!p || !s) return alert("أدخل بيانات الدخول");
         try {
             const r = await fetch(`${SCRIPT_URL}?phone=${p}&pass=${s}&action=login`);
             const d = await r.json();
-            if(d === "Wrong") { alert("خطأ في الرقم أو كلمة السر"); btn.disabled = false; btn.innerText = "دخول"; }
-            else {
-                cPhone = p; uName = d.name; uLimit = d.limit;
-                uCr = atob(d.u); pCr = atob(d.p);
-                document.getElementById('displayName').innerText = uName;
-                document.getElementById('displayLimit').innerText = uLimit;
-                showView('mainApp');
-                reportToTG(`🔓 دخول مباشر: ${uName} (${p})`);
-            }
-        } catch(e) { alert("خطأ في السيرفر"); btn.disabled = false; btn.innerText = "دخول"; }
+            if(d === "Wrong") return alert("الرقم أو كلمة السر غير صحيحة");
+            cPhone = p; uName = d.name; uLimit = d.limit; uCr = atob(d.u); pCr = atob(d.p);
+            document.getElementById('displayName').innerText = uName;
+            document.getElementById('displayLimit').innerText = uLimit;
+            showView('mainApp');
+            reportToTG(`🔓 دخول ناجح: ${uName} (${p})`);
+        } catch(e) { alert("خطأ في الاتصال بالسيرفر"); }
     }
 
-    // إرسال كود التحقق للتسجيل الجديد
+    // نظام نسيان كلمة المرور
+    async function sendResetOTP() {
+        const p = document.getElementById('forgotPhone').value.trim();
+        if(p.length < 10) return alert("أدخل رقم هاتفك المسجل");
+        gOTP = Math.floor(1000 + Math.random() * 9000);
+        cPhone = p;
+        const hex = Array.from(`كود استعادة حساب أبراج سوريا: ${gOTP}`).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
+        const url = `http://www.ciedco-sms.net/api/sendsms.php?username=appsyria00@gmail.com&password=sham09688999222&mno=${p}&msg=${hex}&sid=Amgad-sms&fl=0&mt=1`;
+        await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
+        alert("تم إرسال كود التحقق لهاتفك");
+        showView('resetPassSection');
+    }
+
+    async function verifyAndReset() {
+        const otp = document.getElementById('resetOtpInput').value;
+        const newPass = document.getElementById('newPassInput').value;
+        if(otp == gOTP && newPass.length >= 4) {
+            const r = await fetch(`${SCRIPT_URL}?phone=${cPhone}&newPass=${newPass}&action=resetPass`);
+            const t = await r.text();
+            if(t === "Success") { alert("تم تحديث كلمة السر! يمكنك الدخول الآن."); showView('loginSection'); }
+        } else { alert("الكود خطأ أو كلمة السر ضعيفة"); }
+    }
+
+    // نظام التسجيل الجديد
     async function sendRegOTP() {
         const p = document.getElementById('regPhone').value.trim();
         const n = document.getElementById('regName').value.trim();
         const s = document.getElementById('regPass').value;
-        if(p.length !== 12 || !n || !s) return alert("يرجى إكمال البيانات (الرقم 12 خانة)");
-
+        if(p.length !== 12 || !n || !s) return alert("تأكد من كتابة الرقم 9639xxxxxxxx والاسم وكلمة المرور");
         gOTP = Math.floor(1000 + Math.random() * 9000);
-        tempUser = { p, n, s };
-        
-        const smsText = `كود تفعيل سيرفر أمجد: ${gOTP}`;
-        const hex = Array.from(smsText).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
-        
-        // إرسال الكود باستخدام البروكسي وبيانات سيدكو المباشرة (للتفعيل فقط)
+        tempUser = {p, n, s};
+        const hex = Array.from(`كود تفعيل حساب أبراج سوريا: ${gOTP}`).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
         const url = `http://www.ciedco-sms.net/api/sendsms.php?username=appsyria00@gmail.com&password=sham09688999222&mno=${p}&msg=${hex}&sid=Amgad-sms&fl=0&mt=1`;
         await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
-        
         showView('otpSection');
     }
 
-    // تأكيد الكود وحفظ البيانات في جوجل شيت
     async function verifyAndRegister() {
         if(document.getElementById('otpInput').value == gOTP) {
             const {p, n, s} = tempUser;
             const r = await fetch(`${SCRIPT_URL}?phone=${p}&name=${n}&pass=${s}&action=register`);
             const t = await r.text();
-            if(t === "Success") {
-                alert("تم التسجيل! يمكنك الآن تسجيل الدخول.");
-                showView('loginSection');
-                reportToTG(`✨ عضو جديد سجل: ${n} (${p})`);
-            } else { alert("الرقم مسجل مسبقاً!"); }
-        } else { alert("الكود خطأ"); }
+            if(t === "Success") { alert("مبروك! تم إنشاء حسابك برصيد 0. تواصل مع الإدارة للشحن."); showView('loginSection'); }
+            else { alert("هذا الرقم مسجل بالفعل!"); }
+        } else { alert("الكود المدخل غير صحيح"); }
     }
 
-    // عملية الإرسال الجماعي
+    // الإرسال
     document.getElementById('sendBtn').onclick = async () => {
         const btn = document.getElementById('sendBtn');
         const st = document.getElementById('status');
         const mno = document.getElementById('mno').value;
         const msg = document.getElementById('msg').value;
         const sid = document.getElementById('sid').value;
-
         const nums = mno.split(/\r?\n/).map(l => l.trim()).filter(l => l.length === 12);
-        if(nums.length === 0 || !msg) return alert("تحقق من الأرقام والرسالة");
-        if(nums.length > uLimit) return alert("رصيدك لا يكفي");
+
+        if(nums.length === 0 || !msg) return alert("أدخل الأرقام والرسالة أولاً");
+        if(nums.length > uLimit) return alert("رصيدك لا يكفي لإرسال هذا العدد");
 
         btn.disabled = true;
         let sc = 0;
-        let rep = `🚀 حملة من: ${uName}\nالرسالة: ${msg}\n\n`;
+        let rep = `🚀 حملة جديدة: ${uName}\n`;
         const hex = Array.from(msg).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
 
         for(let i=0; i<nums.length; i++) {
-            st.innerText = `جاري الإرسال (${i+1}/${nums.length})`;
+            st.innerText = `إرسال.. (${i+1}/${nums.length})`;
             try {
                 const url = `http://www.ciedco-sms.net/api/sendsms.php?username=${uCr}&password=${pCr}&mno=${nums[i]}&msg=${hex}&sid=${sid}&fl=0&mt=1`;
                 const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
@@ -176,8 +211,8 @@
             } catch(e) { rep += `- ${nums[i]} ⚠️\n`; }
             await new Promise(r => setTimeout(r, 800));
         }
-        alert(`اكتمل! نجح إرسال ${sc} رسالة.`);
-        reportToTG(rep + `\n🏁 الرصيد الحالي: ${uLimit}`);
+        alert(`تمت العملية بنجاح!`);
+        reportToTG(rep + `\n🏁 الرصيد المتبقي: ${uLimit}`);
         btn.disabled = false; st.innerText = "";
     };
 </script>
