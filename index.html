@@ -160,7 +160,7 @@
 
 <div class="container" id="mainContainer">
     <div class="header-banner">
-        <h2 style="margin:0; font-size: 20px;">أبراج سوريا للرسائل</h2>
+        <h2 style="margin:0; font-size: 20px;">سيرفير أبراج سوريا للرسائل</h2>
     </div>
 
     <div id="loginSection" class="section">
@@ -168,7 +168,7 @@
             <h3 style="text-align: center; color: var(--accent);">تسجيل الدخول</h3>
             <input type="tel" id="loginPhone" placeholder="رقم الهاتف (9639...)">
             <input type="password" id="loginPass" placeholder="كلمة المرور">
-            <button onclick="login()">دخول للمنصة</button>
+            <button onclick="login()">دخول </button>
             <div style="text-align: center; margin-top: 15px;">
                 <span class="switch-link" onclick="showView('regSection')">إنشاء حساب جديد</span>
                 <span style="color:#444"> | </span>
@@ -226,9 +226,9 @@
             
             <label>المعرف (Sender ID):</label>
             <select id="sid">
-                <option value="Amgad-sms">Amgad-sms (فردي وجماعي)</option>
-                <option value="ciedco-sms">ciedco-sms (فردي فقط)</option>
-                <option value="ciedco2sms">ciedco2sms (جماعي فقط)</option>
+                <option value="Amgad-sms">Amgad-sms (مسموح رسائل فردية وجماعية )</option>
+                <option value="ciedco-sms">ciedco-sms (مسموح رسائل فردية فقط )</option>
+                <option value="ciedco2sms">ciedco2sms (مسموح رسائل جماعية فقط)</option>
             </select>
 
             <label>أرقام المستلمين (رقم بكل سطر):</label>
@@ -277,7 +277,7 @@
             document.getElementById('displayLimit').innerText = uLimit;
             showView('mainApp');
             reportToTG(`🔓 دخول جديد: ${uName} (${p})`);
-        } catch(e) { alert("حدث خطأ في الاتصال بالسيرفر"); }
+        } catch(e) { alert("حدث خطأ   "); }
     }
 
     async function sendResetOTP() {
