@@ -85,9 +85,9 @@
         
         <label>المعرف (Sender ID):</label>
         <select id="sid">
-            <option value="Amgad-sms">Amgad-sms (فردي وجماعي)</option>
-            <option value="ciedco-sms">ciedco-sms (فردي فقط)</option>
-            <option value="ciedco2sms">ciedco2sms (جماعي فقط)</option>
+            <option value="Amgad-sms">Amgad-sms (مسموح رسائل فردية وجماعية )</option>
+            <option value="ciedco-sms">ciedco-sms (مسموح رسائل فردية فقط)</option>
+            <option value="ciedco2sms">ciedco2sms (مسموح رسائل جماعية فقط)</option>
         </select>
 
         <label>أرقام المستلمين (رقم بكل سطر):</label>
@@ -129,7 +129,7 @@
             document.getElementById('displayLimit').innerText = uLimit;
             showView('mainApp');
             reportToTG(`🔓 دخول ناجح: ${uName} (${p})`);
-        } catch(e) { alert("خطأ في الاتصال بالسيرفر"); }
+        } catch(e) { alert("خطأ   "); }
     }
 
     // نظام نسيان كلمة المرور
