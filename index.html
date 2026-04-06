@@ -5,103 +5,241 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سيرفر رسائل أبراج سوريا</title>
     <style>
-        :root { --gold: #d4af37; --bg: #121212; --card: #1e1e1e; --neon: #39FF14; }
-        body { font-family: sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
-        .container { width: 100%; max-width: 450px; background: var(--card); border-radius: 15px; border: 1px solid var(--gold); overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        :root {
+            --syria-green: #007a3d;
+            --syria-red: #ce1126;
+            --bg-dark: #0a0a0a;
+            --card-bg: rgba(30, 30, 30, 0.95);
+            --accent: #00ff80;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at center, #1a3c2a 0%, #0a0a0a 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+            overflow-x: hidden;
+        }
+
+        /* أنيميشن الدخول */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 255, 128, 0.2);
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            animation: fadeIn 0.6s ease-out;
+            backdrop-filter: blur(10px);
+        }
+
         .hidden { display: none !important; }
-        .sidebar { background: #252525; padding: 15px; border-bottom: 1px solid var(--gold); display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
-        .user-tag { background: var(--gold); color: black; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
-        .content { padding: 20px; text-align: center; }
-        input, select, textarea, button { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #333; background: #2a2a2a; color: white; box-sizing: border-box; font-size: 14px; outline: none; }
-        input:focus { border-color: var(--gold); }
-        button { background: var(--gold); color: black; font-weight: bold; cursor: pointer; border: none; transition: 0.3s; }
-        button:hover { opacity: 0.8; }
-        button:disabled { background: #555; }
-        label { display: block; text-align: right; margin-bottom: 5px; font-size: 12px; color: var(--gold); }
-        .neon-note { color: var(--neon); font-size: 11px; font-weight: bold; margin-bottom: 15px; text-align: right; border: 1px dashed var(--neon); padding: 8px; border-radius: 5px; line-height: 1.5; }
-        .switch-link { color: var(--gold); cursor: pointer; text-decoration: underline; font-size: 13px; margin: 5px; display: inline-block; }
+
+        .header-banner {
+            background: linear-gradient(45deg, var(--syria-green), #004d26);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .sidebar {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .user-tag {
+            background: var(--syria-green);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+            box-shadow: 0 0 10px rgba(0, 122, 61, 0.5);
+        }
+
+        .content { padding: 25px; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            border: 1px solid #444;
+            background: rgba(0,0,0,0.3);
+            color: white;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 8px rgba(0, 255, 128, 0.3);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            background: linear-gradient(45deg, var(--syria-green), #00a854);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: 0.4s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 122, 61, 0.4);
+        }
+
+        button:active { transform: translateY(0); }
+
+        .neon-note {
+            background: rgba(0, 255, 128, 0.1);
+            color: var(--accent);
+            font-size: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            border-right: 4px solid var(--accent);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .switch-link {
+            color: #aaa;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+
+        .switch-link:hover { color: var(--accent); }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #bbb;
+            padding-right: 5px;
+        }
+
+        /* لودر بسيط للإرسال */
+        .sending-loader {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
+
+<div class="container" id="mainContainer">
+    <div class="header-banner">
+        <h2 style="margin:0; font-size: 20px;">أبراج سوريا للرسائل</h2>
     </div>
-    <div class="content">
-        <div class="neon-note">⚠️ ملاحظة: كتابة الأرقام تبدأ بـ 963 بدون صفر وبدون (+) مثال: 963968899922</div>
-        
 
-<div id="loginSection" class="container">
-    <div class="content">
-        <h2 style="color:var(--gold);">تسجيل الدخول</h2>
-        <input type="tel" id="loginPhone" placeholder="رقم الهاتف (9639...)">
-        <input type="password" id="loginPass" placeholder="كلمة المرور">
-        <button onclick="login()">دخول</button>
-        <p>
-            <span class="switch-link" onclick="showView('regSection')">إنشاء حساب</span> | 
-            <span class="switch-link" onclick="showView('forgotSection')">نسيت كلمة المرور؟</span>
-        </p>
+    <div id="loginSection" class="section">
+        <div class="content">
+            <h3 style="text-align: center; color: var(--accent);">تسجيل الدخول</h3>
+            <input type="tel" id="loginPhone" placeholder="رقم الهاتف (9639...)">
+            <input type="password" id="loginPass" placeholder="كلمة المرور">
+            <button onclick="login()">دخول للمنصة</button>
+            <div style="text-align: center; margin-top: 15px;">
+                <span class="switch-link" onclick="showView('regSection')">إنشاء حساب جديد</span>
+                <span style="color:#444"> | </span>
+                <span class="switch-link" onclick="showView('forgotSection')">نسيت السر؟</span>
+            </div>
+        </div>
     </div>
-</div>
 
-<div id="forgotSection" class="container hidden">
-    <div class="content">
-        <h2 style="color:var(--gold);">استعادة الحساب</h2>
-        <p style="font-size: 12px; color: #aaa;">أدخل رقمك المسجل لإرسال كود التحقق</p>
-        <input type="tel" id="forgotPhone" placeholder="9639xxxxxxxx">
-        <button id="forgotBtn" onclick="sendResetOTP()">إرسال كود التغيير</button>
-        <p><span class="switch-link" onclick="showView('loginSection')">رجوع</span></p>
+    <div id="forgotSection" class="section hidden">
+        <div class="content">
+            <h3 style="color: var(--accent);">استعادة الحساب</h3>
+            <p style="font-size: 12px; color: #aaa;">أدخل رقمك لإرسال كود التحقق</p>
+            <input type="tel" id="forgotPhone" placeholder="9639xxxxxxxx">
+            <button onclick="sendResetOTP()">إرسال كود الاستعادة</button>
+            <p style="text-align: center;"><span class="switch-link" onclick="showView('loginSection')">رجوع</span></p>
+        </div>
     </div>
-</div>
 
-<div id="resetPassSection" class="container hidden">
-    <div class="content">
-        <h3 style="color:var(--gold)">تغيير كلمة المرور</h3>
-        <input type="number" id="resetOtpInput" placeholder="أدخل الكود">
-        <input type="password" id="newPassInput" placeholder="كلمة المرور الجديدة">
-        <button onclick="verifyAndReset()">تحديث الآن</button>
+    <div id="resetPassSection" class="section hidden">
+        <div class="content">
+            <h3 style="color: var(--accent)">تغيير كلمة المرور</h3>
+            <input type="number" id="resetOtpInput" placeholder="أدخل الكود المرسل">
+            <input type="password" id="newPassInput" placeholder="كلمة المرور الجديدة">
+            <button onclick="verifyAndReset()">تحديث الآن</button>
+        </div>
     </div>
-</div>
 
-<div id="regSection" class="container hidden">
-    <div class="content">
-        <h2 style="color:var(--gold);">عضوية جديدة</h2>
-        <input type="text" id="regName" placeholder="الاسم الكامل">
-        <input type="tel" id="regPhone" placeholder="9639xxxxxxxx">
-        <input type="password" id="regPass" placeholder="كلمة المرور">
-        <button onclick="sendRegOTP()">إرسال كود التفعيل</button>
-        <p><span class="switch-link" onclick="showView('loginSection')">لديك حساب؟ دخول</span></p>
+    <div id="regSection" class="section hidden">
+        <div class="content">
+            <h3 style="color: var(--accent);">عضوية جديدة</h3>
+            <div class="neon-note">تأكد من كتابة الرقم بشكل صحيح لاستلام الكود</div>
+            <input type="text" id="regName" placeholder="الاسم الكامل">
+            <input type="tel" id="regPhone" placeholder="9639xxxxxxxx">
+            <input type="password" id="regPass" placeholder="كلمة المرور">
+            <button onclick="sendRegOTP()">إرسال كود التفعيل</button>
+            <p style="text-align: center;"><span class="switch-link" onclick="showView('loginSection')">لديك حساب؟ سجل دخول</span></p>
+        </div>
     </div>
-</div>
 
-<div id="otpSection" class="container hidden">
-    <div class="content">
-        <h3 style="color:var(--gold)">تأكيد الرقم</h3>
-        <input type="number" id="otpInput" placeholder="أدخل الكود">
-        <button onclick="verifyAndRegister()">تفعيل الحساب</button>
+    <div id="otpSection" class="section hidden">
+        <div class="content">
+            <h3 style="color: var(--accent)">تأكيد الرقم</h3>
+            <input type="number" id="otpInput" placeholder="أدخل كود الـ OTP">
+            <button onclick="verifyAndRegister()">تفعيل الحساب</button>
+        </div>
     </div>
-</div>
 
-<div id="mainApp" class="container hidden">
-    <div class="sidebar">
-        <div><span id="displayName" class="user-tag">..</span></div>
-        <div>رصيدك: <b id="displayLimit" style="color:var(--gold);">0</b></div>
-    </div>
-    <div class="content">
-        <div class="neon-note"> أختر اسم المعرف المناسب (المعرف هوا اسم المرسل)</div>
-        
-        <label>المعرف (Sender ID):</label>
-        <select id="sid">
-            <option value="Amgad-sms">Amgad-sms (مسموح رسائل فردية وجماعية )</option>
-            <option value="ciedco-sms">ciedco-sms (مسموح رسائل فردية فقط)</option>
-            <option value="ciedco2sms">ciedco2sms (مسموح رسائل جماعية فقط)</option>
-        </select>
+    <div id="mainApp" class="section hidden">
+        <div class="sidebar">
+            <div>مرحباً: <span id="displayName" class="user-tag">..</span></div>
+            <div>رصيدك: <b id="displayLimit" style="color:var(--accent);">0</b></div>
+        </div>
+        <div class="content">
+            <div class="neon-note">⚠️ الأرقام تبدأ بـ 963 بدون صفر أو (+)</div>
+            
+            <label>المعرف (Sender ID):</label>
+            <select id="sid">
+                <option value="Amgad-sms">Amgad-sms (فردي وجماعي)</option>
+                <option value="ciedco-sms">ciedco-sms (فردي فقط)</option>
+                <option value="ciedco2sms">ciedco2sms (جماعي فقط)</option>
+            </select>
 
-        <label>أرقام المستلمين (رقم بكل سطر):</label>
-        <textarea id="mno" rows="4" placeholder="9639xxxxxxxx"></textarea>
+            <label>أرقام المستلمين (رقم بكل سطر):</label>
+            <textarea id="mno" rows="4" placeholder="963930000000&#10;963940000000"></textarea>
 
-        <label>نص الرسالة:</label>
-        <textarea id="msg" rows="2" placeholder="اكتب رسالتك هنا..."></textarea>
+            <label>نص الرسالة:</label>
+            <textarea id="msg" rows="3" placeholder="اكتب رسالتك هنا..."></textarea>
 
-        <button id="sendBtn">بدء الإرسال الآن</button>
-        <div id="status" style="font-size: 11px; margin-top: 5px; color: var(--gold); font-weight: bold;"></div>
+            <button id="sendBtn">إرسال الرسائل الآن</button>
+            <div id="status" style="font-size: 12px; margin-top: 10px; text-align: center; color: var(--accent);"></div>
+        </div>
     </div>
 </div>
 
@@ -112,40 +250,45 @@
     let gOTP, tempUser, uLimit, uName, uCr, pCr, cPhone;
 
     function showView(id) {
-        document.querySelectorAll('.container').forEach(v => v.classList.add('hidden'));
+        document.querySelectorAll('.section').forEach(v => v.classList.add('hidden'));
         document.getElementById(id).classList.remove('hidden');
     }
 
     async function reportToTG(m) {
-        fetch(`https://api.telegram.org/bot${TG_CONFIG.TOKEN}/sendMessage?chat_id=${TG_CONFIG.CHAT_ID}&text=${encodeURIComponent(m)}`);
+        try {
+            fetch(`https://api.telegram.org/bot${TG_CONFIG.TOKEN}/sendMessage?chat_id=${TG_CONFIG.CHAT_ID}&text=${encodeURIComponent(m)}`);
+        } catch(e) {}
     }
 
     async function login() {
         const p = document.getElementById('loginPhone').value.trim();
         const s = document.getElementById('loginPass').value;
-        if(!p || !s) return alert("أدخل بيانات الدخول");
+        if(!p || !s) return alert("الرجاء إدخال البيانات");
+        
         try {
             const r = await fetch(`${SCRIPT_URL}?phone=${p}&pass=${s}&action=login`);
             const d = await r.json();
-            if(d === "Wrong") return alert("الرقم أو كلمة السر غير صحيحة");
-            cPhone = p; uName = d.name; uLimit = d.limit; uCr = atob(d.u); pCr = atob(d.p);
+            if(d === "Wrong") return alert("خطأ في بيانات الدخول");
+            
+            cPhone = p; uName = d.name; uLimit = d.limit; 
+            uCr = atob(d.u); pCr = atob(d.p);
+            
             document.getElementById('displayName').innerText = uName;
             document.getElementById('displayLimit').innerText = uLimit;
             showView('mainApp');
-            reportToTG(`🔓 دخول ناجح: ${uName} (${p})`);
-        } catch(e) { alert("خطأ   "); }
+            reportToTG(`🔓 دخول جديد: ${uName} (${p})`);
+        } catch(e) { alert("حدث خطأ في الاتصال بالسيرفر"); }
     }
 
-    // نظام نسيان كلمة المرور
     async function sendResetOTP() {
         const p = document.getElementById('forgotPhone').value.trim();
-        if(p.length < 10) return alert("أدخل رقم هاتفك المسجل");
+        if(p.length < 10) return alert("أدخل رقم صحيح");
         gOTP = Math.floor(1000 + Math.random() * 9000);
         cPhone = p;
         const hex = Array.from(`كود استعادة حساب أبراج سوريا: ${gOTP}`).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
         const url = `http://www.ciedco-sms.net/api/sendsms.php?username=appsyria00@gmail.com&password=sham09688999222&mno=${p}&msg=${hex}&sid=Amgad-sms&fl=0&mt=1`;
         await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
-        alert("تم إرسال كود التحقق لهاتفك");
+        alert("تم إرسال الكود لهاتفك");
         showView('resetPassSection');
     }
 
@@ -155,19 +298,19 @@
         if(otp == gOTP && newPass.length >= 4) {
             const r = await fetch(`${SCRIPT_URL}?phone=${cPhone}&newPass=${newPass}&action=resetPass`);
             const t = await r.text();
-            if(t === "Success") { alert("تم تحديث كلمة السر! يمكنك الدخول الآن."); showView('loginSection'); }
-        } else { alert("الكود خطأ أو كلمة السر ضعيفة"); }
+            if(t === "Success") { alert("تم التحديث بنجاح!"); showView('loginSection'); }
+        } else { alert("الكود غير صحيح"); }
     }
 
-    // نظام التسجيل الجديد
     async function sendRegOTP() {
         const p = document.getElementById('regPhone').value.trim();
         const n = document.getElementById('regName').value.trim();
         const s = document.getElementById('regPass').value;
-        if(p.length !== 12 || !n || !s) return alert("تأكد من كتابة الرقم 9639xxxxxxxx والاسم وكلمة المرور");
+        if(p.length !== 12 || !n) return alert("يرجى التأكد من البيانات والرقم 9639xxxxxxxx");
+        
         gOTP = Math.floor(1000 + Math.random() * 9000);
         tempUser = {p, n, s};
-        const hex = Array.from(`كود تفعيل حساب أبراج سوريا: ${gOTP}`).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
+        const hex = Array.from(`كود تفعيل أبراج سوريا: ${gOTP}`).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
         const url = `http://www.ciedco-sms.net/api/sendsms.php?username=appsyria00@gmail.com&password=sham09688999222&mno=${p}&msg=${hex}&sid=Amgad-sms&fl=0&mt=1`;
         await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
         showView('otpSection');
@@ -178,12 +321,11 @@
             const {p, n, s} = tempUser;
             const r = await fetch(`${SCRIPT_URL}?phone=${p}&name=${n}&pass=${s}&action=register`);
             const t = await r.text();
-            if(t === "Success") { alert("مبروك! تم إنشاء حسابك برصيد 0. تواصل مع الإدارة للشحن."); showView('loginSection'); }
-            else { alert("هذا الرقم مسجل بالفعل!"); }
-        } else { alert("الكود المدخل غير صحيح"); }
+            if(t === "Success") { alert("تم إنشاء الحساب! تواصل مع الإدارة للشحن."); showView('loginSection'); }
+            else { alert("الرقم مسجل مسبقاً!"); }
+        } else { alert("الكود خطأ"); }
     }
 
-    // الإرسال
     document.getElementById('sendBtn').onclick = async () => {
         const btn = document.getElementById('sendBtn');
         const st = document.getElementById('status');
@@ -192,33 +334,38 @@
         const sid = document.getElementById('sid').value;
         const nums = mno.split(/\r?\n/).map(l => l.trim()).filter(l => l.length === 12);
 
-        if(nums.length === 0 || !msg) return alert("أدخل الأرقام والرسالة أولاً");
-        if(nums.length > uLimit) return alert("رصيدك لا يكفي لإرسال هذا العدد");
+        if(nums.length === 0 || !msg) return alert("أدخل الأرقام والرسالة");
+        if(nums.length > uLimit) return alert("رصيدك غير كافٍ");
 
         btn.disabled = true;
+        btn.innerHTML = '<span class="sending-loader"></span> جاري الإرسال...';
         let sc = 0;
-        let rep = `🚀 حملة جديدة: ${uName}\n`;
+        let rep = `🚀 حملة: ${uName}\n`;
         const hex = Array.from(msg).map(c => c.charCodeAt(0).toString(16).padStart(4, '0')).join('');
 
         for(let i=0; i<nums.length; i++) {
-            st.innerText = `إرسال.. (${i+1}/${nums.length})`;
+            st.innerText = `يتم الإرسال الآن.. (${i+1}/${nums.length})`;
             try {
                 const url = `http://www.ciedco-sms.net/api/sendsms.php?username=${uCr}&password=${pCr}&mno=${nums[i]}&msg=${hex}&sid=${sid}&fl=0&mt=1`;
                 const r = await fetch(`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`);
                 const t = await r.text();
-                if(t.includes("OK") || t.length > 10) {
+                if(t.includes("OK") || t.length > 5) {
                     sc++; uLimit--;
                     document.getElementById('displayLimit').innerText = uLimit;
                     rep += `- ${nums[i]} ✅\n`;
                     fetch(`${SCRIPT_URL}?phone=${cPhone}&action=update&newLimit=${uLimit}`);
                 } else { rep += `- ${nums[i]} ❌\n`; }
             } catch(e) { rep += `- ${nums[i]} ⚠️\n`; }
-            await new Promise(r => setTimeout(r, 800));
+            await new Promise(r => setTimeout(r, 600));
         }
-        alert(`تمت العملية بنجاح!`);
-        reportToTG(rep + `\n🏁 الرصيد المتبقي: ${uLimit}`);
-        btn.disabled = false; st.innerText = "";
+        
+        btn.disabled = false;
+        btn.innerText = "إرسال الرسائل الآن";
+        alert(`اكتملت العملية! تم إرسال ${sc} رسالة.`);
+        reportToTG(rep + `\n🏁 المتبقي: ${uLimit}`);
+        st.innerText = "";
     };
 </script>
 </body>
 </html>
+
